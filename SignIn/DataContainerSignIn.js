@@ -1,6 +1,6 @@
 import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
 
-export default function DataContainer({text}){
+export default function DataContainerSignIn({text}){
     return(
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View >

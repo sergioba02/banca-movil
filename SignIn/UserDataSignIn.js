@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
-import DataContainer from "./DataContainer";
+import DataContainer from "./DataContainerSignIn";
 
-export default function UserData(){
+export default function UserDataSignIn(){
     return(
         <View>
             <DataContainer text={'Nombre'}/>

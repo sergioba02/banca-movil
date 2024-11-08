@@ -1,14 +1,14 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import SignInTitle from "./SignInTitle";
-import UserDataSignIn from "./UserDataSignIn";
-import BtnSignIn from "./BtnSignIn";
+import LoginTitle from "./LoginTitle";
+import UserDataLogin from "./UserDataLogin";
+import BtnLogin from "./BtnLogin";
 
-export default function SignInIndex(){
+export default function LoginIndex(){
     return(
         <View style={styles.container}>
-            <SignInTitle/>
-            <UserDataSignIn/>
-            <BtnSignIn/>
+            <LoginTitle/>
+            <UserDataLogin/>
+            <BtnLogin/>
         </View>
     );
 } 
