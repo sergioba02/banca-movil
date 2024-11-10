@@ -2,12 +2,14 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import LoginIndex from './Login/LoginIndex.js';
 import SignInIndex from './SignIn/SignInIndex.js';
+import HomeIndex from './Home/HomeIndex.js';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <LoginIndex/>
+      {/* <LoginIndex/> */}
       {/* <SignInIndex/> */}
+      <HomeIndex/>
       <StatusBar style="auto" />
     </View>
   );
