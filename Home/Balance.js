@@ -1,36 +1,28 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 
 export default function Balance(){
-    // const name = 'Sergio'
-    // const balance = '2000.00'
+    const balance = 0.00;
     return(
         <View style={styles.container}>
-            <View style={styles.container1}>
-                <Text style={styles.text}>Tu saldo:</Text>
-            </View>
-            <View style={styles.container2}>
-                <TouchableOpacity>
-                    <Text style={styles.balance}>$</Text>
-                    <Text> style={styles.currency}MXN</Text>
-                </TouchableOpacity>
-            </View>
+            <Text style={styles.balanceLabel}>Tu saldo:</Text>
+            <TouchableOpacity style={styles.balanceContainer}>
+                <Text style={styles.balance}>${balance}<Text style={styles.currency}>MXN</Text></Text>
+            </TouchableOpacity>
         </View>
-    );
+  );
 } 
 
 const styles = StyleSheet.create({
     container: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: -200,
-      marginBottom: 40,
+        flex: 1,
       
     },
-    text: {
-        fontSize: 48,
+    balanceLabel: {
+        fontSize: 24,
         color: '#004445',
         fontFamily: 'inter',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginBottom: 45,    
     },
     balance: {
         fontSize: 48,
@@ -44,12 +36,7 @@ const styles = StyleSheet.create({
         fontFamily: 'inter',
         fontWeight: 'bold'
     },
-    container1: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        
-      },
-      container2: {
+      balanceContainer: {
         alignItems: 'center',
         justifyContent: 'center'
         
