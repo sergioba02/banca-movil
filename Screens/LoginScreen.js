@@ -1,43 +1,63 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, TouchableWithoutFeedback, TextInput } from "react-native"
+import { StyleSheet, Text, TouchableOpacity, View, Image, TouchableWithoutFeedback, TextInput, Platform, Keyboard, KeyboardAvoidingView,} from "react-native"
 
-export default function LoginScreen() {
+export default function LoginScreen({navigation}) {
   return (
-    <View style={styles.container}>
-      <Image style={styles.logo} source={require('../assets/bancamovil-logo.png')} />
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View >
-          <TextInput
-            style={styles.input}
-            placeholder={'Correo electrónico'}
-            placeholderTextColor='#2C7873'
-
-          />
-        </View>
-      </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View >
-          <TextInput
-            style={styles.input}
-            placeholder={'Contraseña'}
-            placeholderTextColor='#2C7873'
-
-          />
-        </View>
-      </TouchableWithoutFeedback>
-      <TouchableOpacity style={styles.btnContainer}>
-        <Text style={styles.text}>Iniciar Sesión</Text>
-      </TouchableOpacity>
-
-      <View>
-        <TouchableOpacity style={styles.btnContainer}>
-          <Text style={styles.text}>Crear cuenta</Text>
-        </TouchableOpacity>
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+      keyboardVerticalOffset={-220}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View>
-        <Image style={styles.logo} source={require('../assets/bancamovil-logo.png')} />
-        <Text>BANCAMÓVL</Text>
+          <View style={styles.logoContainer}>
+            <Image style={styles.logo} source={require('../assets/bancamovil-logo.png')} />
+          </View>
+          <View style={styles.inputContainer}>
+            
+            <View >
+              <TextInput
+                style={styles.input}
+                placeholder={'Correo electrónico'}
+                placeholderTextColor='#747474'
+                keyboardType="email-address"
+
+              />
+            </View>
+            <View >
+              <TextInput
+                style={styles.input}
+                placeholder={'Contraseña'}
+                placeholderTextColor='#747474'
+                secureTextEntry={true}
+
+              />
+            </View>
+            <View>
+              <TouchableOpacity 
+              style={styles.btnCreate}
+              onPress={() => navigation.navigate("HomeScreen")}
+              >
+                <Text style={styles.text}>Iniciar sesión</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.bottomContainer}>
+            <TouchableOpacity 
+            style={styles.btnLogin}
+            onPress={() => navigation.navigate("SigninScreen")}
+            >
+              <Text style={styles.textLogin}>Crear cuenta</Text>
+            </TouchableOpacity>
+            <View style={styles.footer}>
+              <Image style={styles.tinyLogo} source={require('../assets/bancamovil-logo.png')} />
+              <Text style={styles.tinyText}>BANCAMÓVIL</Text>
+            </View>
+          </View>
         </View>
-      </View>
-    </View>
+
+      </TouchableWithoutFeedback>
+
+    </KeyboardAvoidingView>
   );
 }
 
@@ -45,31 +65,83 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#D1D1D1"
+
+  },
+  logoContainer: {
+    marginTop: 176,
+    alignItems: 'center'
   },
   logo: {
     width: 80,
     height: 92,
   },
+  tinyLogo: {
+    width: 17,
+    height: 20,
+    marginRight: 9,
+  },
   input: {
-    height: 40,
-    width: 300,
-    margin: 12,
+    height: 52,
+    width: 362,
+    marginBottom: 13,
     padding: 10,
     borderRadius: 14,
     backgroundColor: '#fff',
+    fontSize: 20,
+    fontFamily: "inter",
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
 
   },
-  btnContainer: {
+  btnCreate: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 80,
-    backgroundColor: '#004445',
-    width: 128,
-    height: 40,
+    backgroundColor: '#008113',
+    width: 362,
+    height: 45,
+    borderRadius: 100,
+  },
+  btnLogin: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#D1D1D1',
+    borderWidth: 3,
+    borderColor: '#008113',
+    width: 362,
+    height: 45,
+    borderRadius: 100,
+
+  },
+  textLogin: {
+    fontSize: 20,
+    color: '#008113',
+    fontFamily: "inter",
+    fontWeight: "bold"
   },
   text: {
+    fontSize: 20,
+    color: '#FFF',
+    fontFamily: "inter",
+    fontWeight: "bold"
+  },
+  tinyText: {
     fontSize: 16,
-    color: '#6FB98F'
+    color: '#90D344',
+    fontFamily: "inter",
+    fontWeight: "bold"
+  },
+  inputContainer: {
+    marginTop: 77,
+    marginBottom: 279,
+    alignItems: 'center'
+  },
+  footer: {
+    flexDirection: "row",
+    marginTop: 11,
+  },
+  bottomContainer: {
+    alignItems: "center"
   }
 });
