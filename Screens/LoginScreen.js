@@ -13,8 +13,8 @@ export default function LoginScreen({navigation}) {
             <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
           </View>
           <View style={styles.inputContainer}>
-            <View style={styles.titleLogin}>
-              <Text style={styles.textLog}>Inicia sesión</Text>
+            <View style={styles.titleLoginContainer}>
+              <Text style={styles.titleLogin}>Inicia sesión</Text>
             </View>
             <View >
               <TextInput
@@ -71,10 +71,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   logoContainer: {
-    marginTop: 120,
     alignItems: 'center',
-    marginBottom: -30,
-    marginTop: 80,
+    marginBottom: Platform.select({
+      android: -30,
+      ios: 50,
+    }),
+    marginTop: Platform.select({
+      android: 80,
+      ios: 80,
+    })
   },
   logo: {
     width: 400,
@@ -88,12 +93,18 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     width: 362,
-    marginBottom: 10,
+    marginBottom: Platform.select({
+      android: 10,
+      ios: 100,
+      
+    }),
     padding: 10,
     borderRadius: 14,
     fontSize: 18,
-    fontFamily: "inter",
-    fontStyle: "italic",
+    fontFamily: Platform.select({
+      android: "italic",
+      ios: "inter",
+    }),
     fontWeight: "medium",
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
@@ -110,27 +121,42 @@ const styles = StyleSheet.create({
     borderColor: '#1576B7',
     backgroundColor: '#1576B7',
     borderWidth: 1,
-    marginTop: 30,
+    marginTop: Platform.select({
+      android: 30,
+      ios: 60,
+    }),
   },
   btnLogin: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 66,
-    marginBottom: 2,
+    marginTop: Platform.select({
+      android: 66,
+      ios: 66,
+    }),
+    marginBottom: Platform.select({
+      android: 2,
+      ios: 2,
+    }),
     backgroundColor: '#FFFFFF',
     width: 116,
     height: 45,
     borderRadius: 100,
 
   },
-  titleLogin: {
-    marginBottom: 18,
+  titleLoginContainer: {
+    marginBottom: Platform.select({
+      android: 18,
+      ios: 18,
+    }),
     marginLeft: 2,
     alignSelf: 'flex-start',
   },
-  textLog: {
+  titleLogin: {
     fontSize: 35,
-    color: '#000',
+    color: Platform.select({
+      android: '#000',
+      ios: 'red',
+    }),
     fontFamily: "inter",
     fontWeight: "bold",
   },
@@ -153,13 +179,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   inputContainer: {
-    marginTop: 77,
-    marginBottom: 150,
+    marginTop: Platform.select({
+      android: 77,
+      ios: 77,
+    }),
+    marginBottom: Platform.select({
+      android: 150,
+      ios: 150,
+    }),
     alignItems: 'center'
   },
   footer: {
     flexDirection: "row",
-    marginTop: 12,
+    marginTop: Platform.select({
+      android: 12,
+      ios: 12,
+    }),
   },
   bottomContainer: {
     alignItems: "center"
