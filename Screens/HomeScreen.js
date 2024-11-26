@@ -11,7 +11,7 @@ export default function HomeScreen({ navigation }) {
         <TouchableOpacity
         onPress={() => navigation.navigate("LoginScreen")}
         >
-          <Image style={styles.logout} source={require('../assets/Logout.png')} />
+          <Image style={styles.logout} source={require('../assets/logout.png')} />
         </TouchableOpacity>
       </View>
       <View style={styles.balanceContainer}>

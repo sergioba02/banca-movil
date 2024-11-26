@@ -13,8 +13,8 @@ export default function LoginScreen({navigation}) {
             <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
           </View>
           <View style={styles.inputContainer}>
-            <View style={styles.TitleLogin}>
-              <Text style={styles.TextLog}>Inicia sesión</Text>
+            <View style={styles.titleLogin}>
+              <Text style={styles.textLog}>Inicia sesión</Text>
             </View>
             <View >
               <TextInput
@@ -123,12 +123,12 @@ const styles = StyleSheet.create({
     borderRadius: 100,
 
   },
-  TitleLogin: {
+  titleLogin: {
     marginBottom: 18,
     marginLeft: 2,
     alignSelf: 'flex-start',
   },
-  TextLog: {
+  textLog: {
     fontSize: 35,
     color: '#000',
     fontFamily: "inter",
