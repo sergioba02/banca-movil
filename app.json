@@ -9,7 +9,9 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "platforms": ["ios", "android"],
+      "newArchEnabled": true
     },
     "ios": {
       "supportsTablet": true
@@ -25,3 +27,4 @@
     }
   }
 }
+
