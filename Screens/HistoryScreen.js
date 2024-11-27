@@ -9,27 +9,23 @@ export default function HomeScreen({ navigation }) {
             {/*Historial */}
             <View style={styles.historyContainer}>
                 <TouchableOpacity style={styles.historyItem}>
-                    <View>
-                        <View style={styles.historyItemTop}>
-                            <Text style={styles.historyItemName}>Jorge Tapia</Text>
-                            <Text style={styles.historyItemAmount}>$328.00</Text>
-                        </View>
-                        <View style={styles.historyItemBottom}>
-                            <Text style={styles.historyItemDate}>09/11/24</Text>
-                            <Text style={styles.historyItemStatus}>Completado</Text>
-                        </View>
+                    <View style={styles.historyItemTop}>
+                        <Text style={styles.historyItemName}>Sergio Tabula</Text>
+                        <Text style={styles.historyItemDate}>09/11/24</Text>
                     </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.historyItem}>
-                    <View>
-                        <View style={styles.historyItemTop}>
-                            <Text style={styles.historyItemName}>Natanael Cano</Text>
-                            <Text style={styles.historyItemAmount}>$316.00</Text>
-                        </View>
-                        <View style={styles.historyItemBottom}>
-                            <Text style={styles.historyItemDate}>02/11/24</Text>
-                            <Text style={styles.historyItemStatus}>Creado</Text>
-                        </View>
+                    <View style={styles.historyItemMoney}>
+                        <Text style={styles.historyItemAmount}>$328.00</Text>
+                        <Text style={styles.historyItemStatus}>Completado</Text>
+                    </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.historyItem}>
+                    <View style={styles.historyItemTop}>
+                        <Text style={styles.historyItemName}>Natanael Cano</Text>
+                        <Text style={styles.historyItemDate}>02/09/24</Text>
+                    </View>
+                    <View style={styles.historyItemMoney}>
+                        <Text style={styles.historyItemAmount}>$254.00</Text>
+                        <Text style={styles.historyItemStatus}>Creado</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -51,7 +47,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         alignItems: 'center',
-        backgroundColor: '#E7E7E7'
+        backgroundColor: '#218DD4'
     },
     label: {
         fontFamily: "inter",
@@ -59,7 +55,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: 'black',
         marginRight: 180,
-        color: '#009216',
+        color: '#FFFFFF',
         marginTop: 68,
         marginBottom: 13,
 
@@ -70,7 +66,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: 362,
         height: 602,
-        backgroundColor: '#fff',
+        backgroundColor: '#F1F1F1',
         borderRadius: 14,
         marginBottom: 43,
         shadowColor: '#000',
@@ -79,64 +75,63 @@ const styles = StyleSheet.create({
 
     },
     historyItem: {
-        flexDirection: 'column',
-        justifyContent: 'space-around',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         width: 323,
         height: 60,
         backgroundColor: '#E7E7E7',
         borderRadius: 14,
+        paddingHorizontal: 10,
         marginTop: 16,
-
+    
     },
     historyItemTop: {
-        flexDirection: 'row',
-        marginBottom: 4,
-
-    },
-    historyItemBottom: {
-        flexDirection: 'row',
-
+        justifyContent: 'center',
+        flexDirection: 'column',
     },
     historyItemName: {
         fontFamily: "inter",
-        fontSize: 20,
-        marginLeft: 10,
-        marginRight: 80,
-
-
-    },
+        fontSize: 18,
+      },
+    historyItemMoney: {
+        alignItems: 'flex-end',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        
+      },
     historyItemAmount: {
         fontFamily: "inter",
-        fontSize: 20,
-
+        fontSize: 18,
+        color: '#000',
     },
     historyItemDate: {
         fontFamily: "inter",
         fontSize: 12,
-        marginLeft: 17,
-        marginRight: 140,
-
+        color: '#000',
+        opacity: 0.6,
     },
     historyItemStatus: {
         fontFamily: "inter",
         fontSize: 12,
-        color: '#008113'
-
+        color: '#008113',
+    
     },
     btnClose: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#E7E7E7',
+        backgroundColor: '#5DADE2',
         borderWidth: 3,
-        borderColor: '#009216',
-        width: 362,
-        height: 45,
+        borderColor: '#5DADE2',
+        width: 128,
+        height: 40,
         borderRadius: 100,
+        marginTop: -15,
 
     },
     textClose: {
         fontSize: 20,
-        color: '#009216',
+        color: '#FFFFFF',
         fontFamily: "inter",
         fontWeight: "bold"
     },
