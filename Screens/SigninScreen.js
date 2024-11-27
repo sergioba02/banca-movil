@@ -1,6 +1,41 @@
+import { useState } from "react"
 import { StyleSheet, Text, TouchableOpacity, View, Image, TouchableWithoutFeedback, TextInput, Platform, Keyboard, KeyboardAvoidingView,} from "react-native"
 
 export default function LoginScreen({navigation}) {
+
+  const {name, setName} = useState();
+  const {surname, setSurname} = useState();
+  const {email, setEmail} = useState();
+  const {password, setPassword} = useState();
+
+  const handleRegister = async () => {
+    try {
+      const response = await fetch('http://192.168.1.67:3000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          surname,
+          email,
+          password,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        Alert.alert('Éxito', `Usuario registrado: ${data.name}`);
+      } else {
+        const errorData = await response.json();
+        Alert.alert('Error', errorData.message || 'Error al registrar usuario');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo conectar con el servidor');
+      console.error(error);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       style={{flex: 1}}
@@ -21,6 +56,7 @@ export default function LoginScreen({navigation}) {
                 style={styles.input}
                 placeholder={'Nombre'}
                 placeholderTextColor='#747474'
+                onChange={() => setName}
 
               />
             </View>
@@ -29,6 +65,7 @@ export default function LoginScreen({navigation}) {
                 style={styles.input}
                 placeholder={'Apellido'}
                 placeholderTextColor='#747474'
+                onChange={() => setSurname}
 
               />
             </View>
@@ -38,6 +75,7 @@ export default function LoginScreen({navigation}) {
                 placeholder={'Correo electrónico'}
                 placeholderTextColor='#747474'
                 keyboardType="email-address"
+                onChange={() => setEmail}
 
               />
             </View>
@@ -47,13 +85,14 @@ export default function LoginScreen({navigation}) {
                 placeholder={'Contraseña'}
                 placeholderTextColor='#747474'
                 secureTextEntry={true}
+                onChange={() => setPassword}
 
               />
             </View>
             <View>
               <TouchableOpacity 
               style={styles.btnCreate}
-              onPress={() => navigation.navigate("HomeScreen")}
+              onPress={handleRegister}
               >
                 <Text style={styles.text}>Crear cuenta</Text>
               </TouchableOpacity>
