@@ -16,7 +16,7 @@ export default function LoginScreen({navigation}) {
             <View style={styles.titleLoginContainer}>
               <Text style={styles.titleLogin}>Inicia sesión</Text>
             </View>
-            <View >
+            <View style={Platform.OS === 'ios' ? styles.inputt : null}>
               <TextInput
                 style={styles.input}
                 placeholder={'Correo electrónico'}
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Platform.select({
       android: -30,
-      ios: 50,
+      ios: 100,
     }),
     marginTop: Platform.select({
       android: 80,
@@ -90,12 +90,15 @@ const styles = StyleSheet.create({
     height: 20,
     marginRight: 9,
   },
+  inputt: {
+    
+  },
   input: {
     height: 40,
     width: 362,
     marginBottom: Platform.select({
       android: 10,
-      ios: 100,
+      ios: 13,
       
     }),
     padding: 10,
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: Platform.select({
       android: 30,
-      ios: 60,
+      ios: 30,
     }),
   },
   btnLogin: {
@@ -155,7 +158,7 @@ const styles = StyleSheet.create({
     fontSize: 35,
     color: Platform.select({
       android: '#000',
-      ios: 'red',
+      ios: '#000',
     }),
     fontFamily: "inter",
     fontWeight: "bold",
