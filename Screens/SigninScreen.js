@@ -13,10 +13,10 @@ export default function LoginScreen({navigation}) {
             <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
           </View>
           <View style={styles.inputContainer}>
-            <View style={styles.TitleRegister}>
-              <Text style={styles.TextRegister}>Regístrate</Text>
+            <View style={styles.titleSigninContainer}>
+              <Text style={styles.titleSignin}>Regístrate</Text>
             </View>
-            <View >
+            <View style={styles.inputt}>
               <TextInput
                 style={styles.input}
                 placeholder={'Nombre'}
@@ -24,7 +24,7 @@ export default function LoginScreen({navigation}) {
 
               />
             </View>
-            <View >
+            <View style={styles.inputt}>
               <TextInput
                 style={styles.input}
                 placeholder={'Apellido'}
@@ -32,7 +32,7 @@ export default function LoginScreen({navigation}) {
 
               />
             </View>
-            <View >
+            <View style={styles.inputt}>
               <TextInput
                 style={styles.input}
                 placeholder={'Correo electrónico'}
@@ -41,7 +41,7 @@ export default function LoginScreen({navigation}) {
 
               />
             </View>
-            <View >
+            <View style={styles.inputt}>
               <TextInput
                 style={styles.input}
                 placeholder={'Contraseña'}
@@ -51,7 +51,10 @@ export default function LoginScreen({navigation}) {
               />
             </View>
             <View>
-              <TouchableOpacity style={styles.btnCreate}>
+              <TouchableOpacity 
+              style={styles.btnCreate}
+              onPress={() => navigation.navigate("HomeScreen")}
+              >
                 <Text style={styles.text}>Crear cuenta</Text>
               </TouchableOpacity>
             </View>
@@ -81,14 +84,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFF',
 
   },
   logoContainer: {
-    marginTop: 120,
     alignItems: 'center',
-    marginBottom: -30,
-    marginTop: 80,
+    marginBottom: Platform.select({
+      android: -30,
+      ios: 120,
+    }),
+    marginTop: Platform.select({
+      android: 80,
+      ios: 120,
+    })
   },
   logo: {
     width: 400,
@@ -98,6 +106,13 @@ const styles = StyleSheet.create({
     width: 29,
     height: 20,
     marginRight: 9,
+  },
+  inputt: {
+    marginBottom: Platform.select({
+      android: 10,
+      ios: 53,
+      
+    }),
   },
   input: {
     height: 40,
@@ -115,12 +130,23 @@ const styles = StyleSheet.create({
     borderColor: '#D1D1D1',
     borderWidth: 1,
   },
-  TitleRegister: {
-    marginBottom: 18,
+  titleSigninContainer: {
+    width: Platform.select({
+      android: '',
+      ios: 'auto',
+    }),
+    height: Platform.select({
+      android: '',
+      ios: 42,
+    }),
+    marginBottom: Platform.select({
+      android: 18,
+      ios:25,
+    }),
     marginLeft: 2,
     alignSelf: 'flex-start',
   },
-  TextRegister: {
+  titleSignin: {
     fontSize: 35,
     color: '#000',
     fontFamily: "inter",
@@ -129,7 +155,10 @@ const styles = StyleSheet.create({
   btnCreate: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 140,
+    width: Platform.select({
+      android: 140,
+      ios: 155,
+    }),
     height: 40,
     borderRadius: 28,
     borderColor: '#1576B7',
@@ -140,12 +169,24 @@ const styles = StyleSheet.create({
   btnLogin: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: -35,
+    marginTop: Platform.select({
+      android: -35,
+      ios: 320,
+    }),
     marginBottom: 2,
-    backgroundColor: '#FFFFFF',
-    width: 114,
+    width: Platform.select({
+      android: 114,
+      ios: 'auto',
+    }),
+    backgroundColor: Platform.select({
+      android: '#FFF',
+      ios: '',
+    }),
     height: 45,
-    borderRadius: 100,
+    borderRadius: Platform.select({
+      android: 100,
+      ios: 0,
+    }),
 
   },
   textLogin: {
@@ -167,14 +208,26 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   inputContainer: {
-    marginTop: 77,
-    marginBottom: 150,
+    marginTop: Platform.select({
+      android: 77,
+      ios: 80,
+    }),
+    marginBottom: Platform.select({
+      android: 150,
+      ios: 145,
+    }),
     alignItems: 'center'
   },
   footer: {
     flexDirection: "row",
-    marginTop: 12,
-    
+    marginTop: Platform.select({
+      android: 12,
+      ios: 12,
+    }),
+    height: Platform.select({
+      android: 0,
+      ios: 17,
+    })
   },
   bottomContainer: {
     alignItems: "center"

@@ -16,7 +16,7 @@ export default function LoginScreen({navigation}) {
             <View style={styles.titleLoginContainer}>
               <Text style={styles.titleLogin}>Inicia sesión</Text>
             </View>
-            <View style={Platform.OS === 'ios' ? styles.inputt : null}>
+            <View style={styles.inputt}>
               <TextInput
                 style={styles.input}
                 placeholder={'Correo electrónico'}
@@ -25,7 +25,7 @@ export default function LoginScreen({navigation}) {
 
               />
             </View>
-            <View >
+            <View style={styles.inputt}>
               <TextInput
                 style={styles.input}
                 placeholder={'Contraseña'}
@@ -45,11 +45,11 @@ export default function LoginScreen({navigation}) {
           </View>
           <View style={styles.bottomContainer}>
             <TouchableOpacity 
-            style={styles.btnLogin}
+            style={styles.btnSignin}
             onPress={() => navigation.navigate("SigninScreen")}
             >
-              <Text style={styles.textLogin}>¿No tienes cuenta?</Text>
-              <Text style={styles.textLogin}>Regístrate aquí</Text>
+              <Text style={styles.textSignin}>¿No tienes cuenta?</Text>
+              <Text style={styles.textSignin}>Regístrate aquí</Text>
             </TouchableOpacity>
             <View style={styles.footer}>
               <Image style={styles.tinyLogo} source={require('../assets/Puerkito.png')} />
@@ -68,17 +68,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFF',
   },
   logoContainer: {
     alignItems: 'center',
     marginBottom: Platform.select({
       android: -30,
-      ios: 100,
+      ios: 120,
     }),
     marginTop: Platform.select({
       android: 80,
-      ios: 80,
+      ios: 120,
     })
   },
   logo: {
@@ -91,23 +91,20 @@ const styles = StyleSheet.create({
     marginRight: 9,
   },
   inputt: {
-    
+    marginBottom: Platform.select({
+      android: 10,
+      ios: 53,
+      
+    }),
   },
   input: {
     height: 40,
     width: 362,
-    marginBottom: Platform.select({
-      android: 10,
-      ios: 13,
-      
-    }),
     padding: 10,
     borderRadius: 14,
     fontSize: 18,
-    fontFamily: Platform.select({
-      android: "italic",
-      ios: "inter",
-    }),
+    fontFamily: "inter",
+    fontStyle: "italic",
     fontWeight: "medium",
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
@@ -118,7 +115,10 @@ const styles = StyleSheet.create({
   btnCreate: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 140,
+    width: Platform.select({
+      android: 140,
+      ios: 155,
+    }),
     height: 40,
     borderRadius: 28,
     borderColor: '#1576B7',
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
       ios: 30,
     }),
   },
-  btnLogin: {
+  btnSignin: {
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: Platform.select({
@@ -140,30 +140,40 @@ const styles = StyleSheet.create({
       android: 2,
       ios: 2,
     }),
-    backgroundColor: '#FFFFFF',
-    width: 116,
+    backgroundColor: Platform.select({
+      android: '#FFF',
+      ios: '',
+    }),
+    width: Platform.select({
+      android: 116,
+      ios: 'auto',
+    }),
     height: 45,
-    borderRadius: 100,
-
   },
   titleLoginContainer: {
+    width: Platform.select({
+      android: '',
+      ios: 'auto',
+    }),
+    height: Platform.select({
+      android: '',
+      ios: 35,
+    }),
     marginBottom: Platform.select({
       android: 18,
-      ios: 18,
+      ios:25,
     }),
     marginLeft: 2,
     alignSelf: 'flex-start',
   },
   titleLogin: {
     fontSize: 35,
-    color: Platform.select({
-      android: '#000',
-      ios: '#000',
-    }),
+    color: '#000',
     fontFamily: "inter",
     fontWeight: "bold",
+    
   },
-  textLogin: {
+  textSignin: {
     fontSize: 15,
     color: '#b0b0b0',
     fontFamily: "inter",
@@ -184,11 +194,11 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginTop: Platform.select({
       android: 77,
-      ios: 77,
+      ios: 80,
     }),
     marginBottom: Platform.select({
       android: 150,
-      ios: 150,
+      ios: 400,
     }),
     alignItems: 'center'
   },
@@ -198,6 +208,10 @@ const styles = StyleSheet.create({
       android: 12,
       ios: 12,
     }),
+    height: Platform.select({
+      android: 0,
+      ios: 17,
+    })
   },
   bottomContainer: {
     alignItems: "center"
