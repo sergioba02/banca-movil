@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
       ios: 80,
     }),
     marginBottom: Platform.select({
-      android: 150,
+      android: 111,
       ios: 145,
     }),
     alignItems: 'center'
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
       ios: 12,
     }),
     height: Platform.select({
-      android: 0,
+      android: 17,
       ios: 17,
     })
   },

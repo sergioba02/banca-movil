@@ -205,11 +205,11 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     marginTop: Platform.select({
-      android: 12,
+      android:12,
       ios: 12,
     }),
     height: Platform.select({
-      android: 0,
+      android: 17,
       ios: 17,
     })
   },
