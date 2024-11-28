@@ -1,12 +1,12 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { StyleSheet, Text, TouchableOpacity, View, Image, TouchableWithoutFeedback, TextInput, Platform, Keyboard, KeyboardAvoidingView,} from "react-native"
 
 export default function LoginScreen({navigation}) {
 
-  const {name, setName} = useState();
-  const {surname, setSurname} = useState();
-  const {email, setEmail} = useState();
-  const {password, setPassword} = useState();
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
     try {
@@ -16,10 +16,10 @@ export default function LoginScreen({navigation}) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name,
-          surname,
-          email,
-          password,
+          name: name,
+          surname: surname,
+          email: email,
+          password: password,
         }),
       });
 
@@ -53,10 +53,11 @@ export default function LoginScreen({navigation}) {
             </View>
             <View style={styles.inputt}>
               <TextInput
+                value={name}
                 style={styles.input}
                 placeholder={'Nombre'}
                 placeholderTextColor='#747474'
-                onChange={() => setName}
+                onChangeText={setName}
 
               />
             </View>
@@ -65,7 +66,7 @@ export default function LoginScreen({navigation}) {
                 style={styles.input}
                 placeholder={'Apellido'}
                 placeholderTextColor='#747474'
-                onChange={() => setSurname}
+                onChangeText={setSurname}
 
               />
             </View>
@@ -75,7 +76,7 @@ export default function LoginScreen({navigation}) {
                 placeholder={'Correo electrónico'}
                 placeholderTextColor='#747474'
                 keyboardType="email-address"
-                onChange={() => setEmail}
+                onChangeText={setEmail}
 
               />
             </View>
@@ -85,7 +86,7 @@ export default function LoginScreen({navigation}) {
                 placeholder={'Contraseña'}
                 placeholderTextColor='#747474'
                 secureTextEntry={true}
-                onChange={() => setPassword}
+                onChangeText={setPassword}
 
               />
             </View>
