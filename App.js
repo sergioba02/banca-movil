@@ -3,6 +3,7 @@ import HomeScreen from './Screens/HomeScreen.js';
 import LoginScreen from './Screens/LoginScreen.js'
 import SigninScreen from './Screens/SigninScreen.js'
 import HistoryScreen from './Screens/HistoryScreen.js'
+import PruebaScreen from './Screens/PruebaScreen.js'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
