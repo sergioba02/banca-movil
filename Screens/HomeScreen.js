@@ -52,13 +52,13 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.btnsContainer}>
         <TouchableOpacity
           style={styles.btnReceive}
-          onPress={() => navigation.navigate("")}
+          onPress={() => navigation.navigate("ReceiveScreen")}
           >
           <Text style={styles.btnText}>Recibir</Text>
         </TouchableOpacity>
         <TouchableOpacity 
         style={styles.btnTransfer}
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("TransferScreen")}
         >
           <Text style={styles.btnText}>Transferir</Text>
         </TouchableOpacity>
