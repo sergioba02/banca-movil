@@ -1,5 +1,17 @@
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Image, TouchableWithoutFeedback, TextInput, Platform, Keyboard, KeyboardAvoidingView, Alert } from "react-native"
+import { StyleSheet, 
+  Text, 
+  TouchableOpacity, 
+  View, 
+  Image, 
+  TouchableWithoutFeedback, 
+  TextInput, 
+  Platform, 
+  Keyboard, 
+  KeyboardAvoidingView, 
+  Alert } from "react-native"
+  import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function LoginScreen({ navigation }) {
 
   const [email, setEmail] = useState("");
@@ -18,16 +30,24 @@ export default function LoginScreen({ navigation }) {
         }),
       });
 
-      const errorData = await response.json();
-
       if (response.status === 200) {
+        const {token} = await response.json()
+        await AsyncStorage.setItem('token', token);
         navigation.replace("HomeScreen");
       } else if (response.status === 404) {
+        const errorData = await response.json();
         Keyboard.dismiss();
         Alert.alert('Error', errorData.message, [
           { text: 'Cerrar' },
         ]);
-      } else {
+      } else if(response.status === 401) {
+        const errorData = await response.json();
+        Keyboard.dismiss();
+        Alert.alert('Error', errorData.message, [
+          { text: 'Cerrar' },
+        ]);
+      }else{
+        const errorData = await response.json();
         Keyboard.dismiss();
         Alert.alert('Error', errorData.message, [
           { text: 'Cerrar' },

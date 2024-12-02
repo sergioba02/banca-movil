@@ -1,43 +1,98 @@
-import { useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Image, ImageBackground } from "react-native"
+import { useEffect, useState } from "react";
+import { StyleSheet, View, TouchableOpacity, Text, Image, ImageBackground, Alert } from "react-native"
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function HomeScreen({ navigation }) {
 
+  const [data, setData] = useState([])
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserData = async () => {
       try {
-        const response = await fetch('http://192.168.1.67:3000/auth/login');
+        const token = await AsyncStorage.getItem('token');
+
+        if (!token) {
+          Alert.alert('Error', 'No se encontró el token de autenticación');
+          return;
+        }
+
+        const response = await fetch('http://192.168.1.67:3000/user/data', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, // Incluir el token en el header
+          }
+        });
 
         if (response.status === 200) {
-          navigation.replace("HomeScreen");
-        } else if (response.status === 404) {
-          Keyboard.dismiss();
-          Alert.alert('Error', errorData.message, [
-            { text: 'Cerrar' },
-          ]);
-        } else {
-          Keyboard.dismiss();
-          Alert.alert('Error', errorData.message, [
-            { text: 'Cerrar' },
-          ]);
+          const jsonData = await response.json();
+          setData(jsonData.data[0])
         }
       } catch (error) {
         Alert.alert('Error', 'No se pudo conectar con el servidor');
         console.error(error);
       }
     };
-    fetchData();
-  },[])
+
+    const fetchUserTransactions = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+
+        if (!token) {
+          Alert.alert('Error', 'No se encontró el token de autenticación');
+          return;
+        }
+
+        const response = await fetch('http://192.168.1.67:3000/user/lastTransactions', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, // Incluir el token en el header
+          }
+        });
+
+        if (response.status === 200) {
+          const jsonData = await response.json();
+          setData(jsonData.data)
+        }
+      } catch (error) {
+        Alert.alert('Error', 'No se pudo conectar con el servidor');
+        console.error(error);
+      }
+    };
+    fetchUserData();
+    fetchUserTransactions();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const token = await AsyncStorage.getItem('jwtToken');
+      if (token) {
+        await fetch('http://192.168.1.67:3000/logout', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+      await AsyncStorage.removeItem('jwtToken');
+      Alert.alert('Sesión cerrada', 'Gracias por usar Banca Móvil :)', [
+        { text: 'Cerrar', onPress: () => { navigation.replace("LoginScreen"); } },
+      ]);
+    } catch (error) {
+      console.error('Error al cerrar sesión', error);
+      Alert.alert('Error', 'No se pudo cerrar sesión correctamente');
+    }
+  };
 
   return (
     <ImageBackground
       source={require('../assets/backgroundv2.png')}
       style={styles.container}
-      >
+    >
       <View style={styles.header}>
-        <Text style={styles.greeting}>Hola, Aurora</Text>
+        <Text style={styles.greeting}>Bienvenido, {data.name}</Text>
         <TouchableOpacity
-        onPress={() => navigation.navigate("LoginScreen")}
+          onPress={handleLogout}
         >
           <Image style={styles.logout} source={require('../assets/logout.png')} />
         </TouchableOpacity>
@@ -45,22 +100,22 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.balanceContainer}>
         <View>
           <Text style={styles.balanceLabel}>Saldo actual</Text>
-          <Text style={styles.balance}>$2568.45</Text>
+          <Text style={styles.balance}>${data.balance}</Text>
         </View>
         <TouchableOpacity
           style={styles.btnAddBalance}
           onPress={() => navigation.navigate("AddBalanceScreen")}
-          >
+        >
           <Text style={styles.btnAdd}></Text>
         </TouchableOpacity>
-        
+
       </View>
       {/* View de miniHistorial */}
       <View style={styles.historyContainer}>
         <TouchableOpacity style={styles.historyItem}>
           <View style={styles.historyItemTop}>
             <Text style={styles.historyItemName}>Sergio Tabula</Text>
-            <Text style={styles.historyItemDate}>09/11/24</Text>
+            <Text style={styles.historyItemDate}>2024-12-02</Text>
           </View>
           <View style={styles.historyItemMoney}>
             <Text style={styles.historyItemAmount}>$328.00</Text>
@@ -77,9 +132,9 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.historyItemStatus}>Creado</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity 
-        style={styles.historySeeMore}
-        onPress={() => navigation.navigate("HistoryScreen")}
+        <TouchableOpacity
+          style={styles.historySeeMore}
+          onPress={() => navigation.navigate("HistoryScreen")}
         >
           <Text style={styles.historySeeMoreLabel}>Ver más</Text>
         </TouchableOpacity>
@@ -88,13 +143,13 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.btnsContainer}>
         <TouchableOpacity
           style={styles.btnReceive}
-          onPress={() => navigation.navigate("ReceiveScreen")}
-          >
+          onPress={() => { }}//Abrir camara para escanear QR
+        >
           <Text style={styles.btnText}>Recibir</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-        style={styles.btnTransfer}
-        onPress={() => navigation.navigate("TransferScreen")}
+        <TouchableOpacity
+          style={styles.btnTransfer}
+          onPress={() => navigation.navigate("TransferScreen")}
         >
           <Text style={styles.btnText}>Transferir</Text>
         </TouchableOpacity>
@@ -112,8 +167,10 @@ const styles = StyleSheet.create({
     //backgroundColor: '#D1D1D1',
   },
   header: {
+    width: 362,
     flexDirection: "row",
-    //marginTop: 66,
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginTop: 68,
     marginBottom: 38,
 
@@ -126,7 +183,6 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
-    marginRight: 180,
 
   },
   logout: {
@@ -176,9 +232,9 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
-  
+
   },
- 
+
   historyItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -203,7 +259,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     flexDirection: 'column',
     justifyContent: 'center',
-    
+
   },
   historyItemAmount: {
     fontFamily: "inter",
