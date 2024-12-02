@@ -1,6 +1,34 @@
+import { useEffect } from "react";
 import { StyleSheet, View, TouchableOpacity, Text, Image, ImageBackground } from "react-native"
 
 export default function HomeScreen({ navigation }) {
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://192.168.1.67:3000/auth/login');
+
+        if (response.status === 200) {
+          navigation.replace("HomeScreen");
+        } else if (response.status === 404) {
+          Keyboard.dismiss();
+          Alert.alert('Error', errorData.message, [
+            { text: 'Cerrar' },
+          ]);
+        } else {
+          Keyboard.dismiss();
+          Alert.alert('Error', errorData.message, [
+            { text: 'Cerrar' },
+          ]);
+        }
+      } catch (error) {
+        Alert.alert('Error', 'No se pudo conectar con el servidor');
+        console.error(error);
+      }
+    };
+    fetchData();
+  },[])
+
   return (
     <ImageBackground
       source={require('../assets/backgroundv2.png')}
