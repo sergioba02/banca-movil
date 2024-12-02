@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native"
+import { StyleSheet, View, TouchableOpacity, Text, Image, FlatList } from "react-native"
 
 export default function HomeScreen({ navigation }) {
     return (

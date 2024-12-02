@@ -1,109 +1,111 @@
-import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native"
+import { StyleSheet, View, TouchableOpacity, Text, TextInput, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native"
+
 
 export default function HomeScreen({ navigation }) {
+
+
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.label}>Depositar a mi cuenta</Text>
-            </View>
-            <View style={styles.historyContainer}>
-                <TouchableOpacity style={styles.historyItem}>
-                    <View style={styles.historyItemTop}>
-                        <Text style={styles.historyItemName}>Sergio Tabula</Text>
-                        <Text style={styles.historyItemDate}>09/11/24</Text>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+            keyboardVerticalOffset={-220}
+        >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <Text style={styles.label}>Depositar a mi cuenta</Text>
                     </View>
-                </TouchableOpacity>
-            </View>
-            <View>
-                <TouchableOpacity
-                    style={styles.btnClose}
-                    onPress={() => navigation.navigate("HomeScreen")}
-                >
-                    <Text style={styles.textClose}>Cerrar</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+                    <View style={styles.inputt}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={'Cantidad'}
+                            placeholderTextColor='#747474'
+                            keyboardType="numeric"
+                        />
+                    </View>
+                    <View>
+                        <TouchableOpacity
+                            style={styles.btnAdd}
+                        >
+                            <Text style={styles.textAdd}>Agregar</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View>
+                        <TouchableOpacity
+                            style={styles.btnClose}
+                            onPress={() => navigation.navigate("HomeScreen")}
+                        >
+                            <Text style={styles.textClose}>Cerrar</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        flexDirection: 'column',
         alignItems: 'center',
-        backgroundColor: '#218DD4'
+        justifyContent: 'center',
+        backgroundColor: '#218DD4',
+    },
+    inputt: {
+        marginBottom: Platform.select({
+            android: 0,
+            ios: 0,
+
+        }),
+    },
+    input: {
+        height: 40,
+        width: 264,
+        padding: 10,
+        borderRadius: 14,
+        fontSize: 18,
+        fontFamily: "inter",
+        fontStyle: "italic",
+        fontWeight: "medium",
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.2,
+        borderColor: '#D1D1D1',
+        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
     },
     header: {
         height: 'auto',
         width: 'auto',
+        marginTop: 0,
     },
     label: {
         fontFamily: "inter",
         fontSize: 24,
         fontWeight: "bold",
         color: 'black',
-        marginRight: 180,
         color: '#FFFFFF',
-        marginTop: 68,
-        marginBottom: 13,
+        marginTop: 0,
+        marginBottom: 0,
 
     },
-    historyContainer: {
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
+    btnAdd: {
         alignItems: 'center',
-        width: 362,
-        height: 300,
-        backgroundColor: '#F1F1F1',
-        borderRadius: 14,
-        marginBottom: 43,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.2,
+        justifyContent: 'center',
+        backgroundColor: '#FFFFFF',
+        borderWidth: 3,
+        borderColor: '#FFFFFF',
+        width: 128,
+        height: 40,
+        borderRadius: 100,
+        marginTop: 0,
 
     },
-    historyItem: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: 323,
-        height: 60,
-        backgroundColor: '#E7E7E7',
-        borderRadius: 14,
-        paddingHorizontal: 10,
-        marginTop: 16,
-    
-    },
-    historyItemTop: {
-        justifyContent: 'center',
-        flexDirection: 'column',
-    },
-    historyItemName: {
-        fontFamily: "inter",
-        fontSize: 18,
-      },
-    historyItemMoney: {
-        alignItems: 'flex-end',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        
-      },
-    historyItemAmount: {
-        fontFamily: "inter",
-        fontSize: 18,
-        color: '#000',
-    },
-    historyItemDate: {
-        fontFamily: "inter",
-        fontSize: 12,
+    textAdd: {
+        fontSize: 20,
         color: '#000',
         opacity: 0.6,
-    },
-    historyItemStatus: {
         fontFamily: "inter",
-        fontSize: 12,
-        color: '#008113',
-    
+        fontWeight: "bold"
     },
     btnClose: {
         alignItems: 'center',
@@ -114,7 +116,8 @@ const styles = StyleSheet.create({
         width: 128,
         height: 40,
         borderRadius: 100,
-        marginTop: -15,
+        marginTop: 0,
+        marginBottom: 1000,
 
     },
     textClose: {
@@ -122,5 +125,6 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontFamily: "inter",
         fontWeight: "bold"
+    
     },
 });

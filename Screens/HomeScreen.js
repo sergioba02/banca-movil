@@ -15,8 +15,16 @@ export default function HomeScreen({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={styles.balanceContainer}>
-        <Text style={styles.balanceLabel}>Saldo actual</Text>
-        <Text style={styles.balance}>$2568.45</Text>
+        <View>
+          <Text style={styles.balanceLabel}>Saldo actual</Text>
+          <Text style={styles.balance}>$2568.45</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.btnAddBalance}
+          onPress={() => navigation.navigate("AddBalanceScreen")}
+          >
+          <Text style={styles.btnAdd}></Text>
+        </TouchableOpacity>
         
       </View>
       {/* View de miniHistorial */}
@@ -98,7 +106,7 @@ const styles = StyleSheet.create({
     height: 25,
   },
   balanceContainer: {
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     width: 362,
     height: 97,
     backgroundColor: '#F1F1F1',
@@ -107,6 +115,9 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
 
   },
   balanceLabel: {
@@ -115,17 +126,15 @@ const styles = StyleSheet.create({
     color: '#1576B7',
     opacity: 0.55,
     fontWeight: "bold",
-    marginLeft: 20,
-    marginBottom: 6,
-
   },
   balance: {
     fontFamily: "inter",
     fontSize: 36,
     color: '#1576B7',
     fontWeight: "bold",
-    marginLeft: 20,
-
+  },
+  BalanceTextContainer: {
+    flexDirection: 'column',
   },
   historyContainer: {
     flexDirection: 'column',
@@ -219,5 +228,31 @@ const styles = StyleSheet.create({
   btnText: {
     fontSize: 16,
     color: '#FFF'
+  },
+  btnAddBalance: {
+    width: 150,
+    height: 98,
+    backgroundColor: '#c1c1c1',
+    opacity: 0.3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 14,
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    marginRight: -20,
+  },
+  btnAdd: {
+    fontSize: 18,
+    fontStyle: 'normal',
+    //color: '#5DADE2',
+    color: '#000',
+    fontWeight: '400',
+    marginLeft: 20,
+    //opacity: 0.6,
   },
 });
