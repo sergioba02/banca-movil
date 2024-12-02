@@ -1,9 +1,47 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, TouchableWithoutFeedback, TextInput, Platform, Keyboard, KeyboardAvoidingView,} from "react-native"
+import { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View, Image, TouchableWithoutFeedback, TextInput, Platform, Keyboard, KeyboardAvoidingView, Alert } from "react-native"
+export default function LoginScreen({ navigation }) {
 
-export default function LoginScreen({navigation}) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://192.168.1.67:3000/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      const errorData = await response.json();
+
+      if (response.status === 200) {
+        navigation.replace("HomeScreen");
+      } else if (response.status === 404) {
+        Keyboard.dismiss();
+        Alert.alert('Error', errorData.message, [
+          { text: 'Cerrar' },
+        ]);
+      } else {
+        Keyboard.dismiss();
+        Alert.alert('Error', errorData.message, [
+          { text: 'Cerrar' },
+        ]);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo conectar con el servidor');
+      console.error(error);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
-      style={{flex: 1}}
+      style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'position' : 'height'}
       keyboardVerticalOffset={-220}
     >
@@ -22,6 +60,7 @@ export default function LoginScreen({navigation}) {
                 placeholder={'Correo electrónico'}
                 placeholderTextColor='#747474'
                 keyboardType="email-address"
+                onChangeText={setEmail}
 
               />
             </View>
@@ -31,22 +70,23 @@ export default function LoginScreen({navigation}) {
                 placeholder={'Contraseña'}
                 placeholderTextColor='#747474'
                 secureTextEntry={true}
+                onChangeText={setPassword}
 
               />
             </View>
             <View>
-              <TouchableOpacity 
-              style={styles.btnCreate}
-              onPress={() => navigation.navigate("HomeScreen")}
+              <TouchableOpacity
+                style={styles.btnCreate}
+                onPress={handleLogin}
               >
                 <Text style={styles.text}>Iniciar sesión</Text>
               </TouchableOpacity>
             </View>
           </View>
           <View style={styles.bottomContainer}>
-            <TouchableOpacity 
-            style={styles.btnSignin}
-            onPress={() => navigation.navigate("SigninScreen")}
+            <TouchableOpacity
+              style={styles.btnSignin}
+              onPress={() => navigation.navigate("SigninScreen")}
             >
               <Text style={styles.textSignin}>¿No tienes cuenta?</Text>
               <Text style={styles.textSignin}>Regístrate aquí</Text>
@@ -94,7 +134,7 @@ const styles = StyleSheet.create({
     marginBottom: Platform.select({
       android: 10,
       ios: 53,
-      
+
     }),
   },
   input: {
@@ -161,7 +201,7 @@ const styles = StyleSheet.create({
     }),
     marginBottom: Platform.select({
       android: 18,
-      ios:25,
+      ios: 25,
     }),
     marginLeft: 2,
     alignSelf: 'flex-start',
@@ -171,7 +211,7 @@ const styles = StyleSheet.create({
     color: '#000',
     fontFamily: "inter",
     fontWeight: "bold",
-    
+
   },
   textSignin: {
     fontSize: 15,

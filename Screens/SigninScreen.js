@@ -1,16 +1,22 @@
-import { useState, useEffect } from "react"
-import { StyleSheet, Text, TouchableOpacity, View, Image, TouchableWithoutFeedback, TextInput, Platform, Keyboard, KeyboardAvoidingView,} from "react-native"
+import { useState, } from "react"
+import { StyleSheet, Text, TouchableOpacity, View, Image, TouchableWithoutFeedback, TextInput, Platform, Keyboard, KeyboardAvoidingView, Alert, } from "react-native"
 
-export default function LoginScreen({navigation}) {
+export default function LoginScreen({ navigation }) {
 
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // Expresión regular para validar email
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+    return emailRegex.test(email);
+  };
+
   const handleRegister = async () => {
     try {
-      const response = await fetch('http://192.168.1.67:3000/register', {
+      const response = await fetch('http://192.168.1.67:3000/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -23,13 +29,18 @@ export default function LoginScreen({navigation}) {
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        Alert.alert('Éxito', `Usuario registrado: ${data.name}`);
-      } else {
-        const errorData = await response.json();
-        Alert.alert('Error', errorData.message || 'Error al registrar usuario');
-      }
+      const errorData = await response.json();
+
+      if (response.status === 200) {
+        Alert.alert('Usuario registrado', 'Usted se ha registrado correctamente a Banca Móvil', [
+          { text: 'Aceptar', onPress: () => {navigation.replace("LoginScreen");} },
+        ]);
+      }else if (errorData.status === 409) {
+            Keyboard.dismiss();
+            Alert.alert('Error', errorData.message, [
+              { text: 'Cerrar' },
+            ]);
+        }
     } catch (error) {
       Alert.alert('Error', 'No se pudo conectar con el servidor');
       console.error(error);
@@ -38,7 +49,7 @@ export default function LoginScreen({navigation}) {
 
   return (
     <KeyboardAvoidingView
-      style={{flex: 1}}
+      style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'position' : 'height'}
       keyboardVerticalOffset={-220}
     >
@@ -76,6 +87,7 @@ export default function LoginScreen({navigation}) {
                 placeholder={'Correo electrónico'}
                 placeholderTextColor='#747474'
                 keyboardType="email-address"
+                autoCapitalize="none"
                 onChangeText={setEmail}
 
               />
@@ -91,18 +103,26 @@ export default function LoginScreen({navigation}) {
               />
             </View>
             <View>
-              <TouchableOpacity 
-              style={styles.btnCreate}
-              onPress={handleRegister}
+              <TouchableOpacity
+                style={styles.btnCreate}
+                onPress={() => {
+                  if(!isValidEmail(email)){
+                    Alert.alert('Email inválido', 'El email que ingresaste no tiene la sintaxis esperada.', [
+                      { text: 'Cerrar' },
+                    ]);
+                  }else{
+                    handleRegister();
+                  };
+                }}
               >
                 <Text style={styles.text}>Crear cuenta</Text>
               </TouchableOpacity>
             </View>
           </View>
           <View style={styles.bottomContainer}>
-            <TouchableOpacity 
-            style={styles.btnLogin}
-            onPress={() => navigation.navigate("LoginScreen")}
+            <TouchableOpacity
+              style={styles.btnLogin}
+              onPress={() => navigation.navigate("LoginScreen")}
             >
               <Text style={styles.textLogin}>¿Ya tienes cuenta?</Text>
               <Text style={styles.textLogin}>Inicia sesión aquí</Text>
@@ -151,7 +171,7 @@ const styles = StyleSheet.create({
     marginBottom: Platform.select({
       android: 10,
       ios: 53,
-      
+
     }),
   },
   input: {
@@ -181,7 +201,7 @@ const styles = StyleSheet.create({
     }),
     marginBottom: Platform.select({
       android: 18,
-      ios:25,
+      ios: 25,
     }),
     marginLeft: 2,
     alignSelf: 'flex-start',
