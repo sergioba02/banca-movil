@@ -20,10 +20,6 @@ export default function HomeScreen({ navigation }) {
   const [dataToList, setDataToList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const ids = [];
-  
-
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -71,6 +67,7 @@ export default function HomeScreen({ navigation }) {
         });
 
         if (response.status === 200) {
+          const ids = [];
           const jsonData = await response.json();
 
           jsonData.data.forEach((transaction) => {
