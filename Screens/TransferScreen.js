@@ -1,15 +1,19 @@
 import { useState } from "react"
 import { StyleSheet, View, TouchableOpacity, Text, KeyboardAvoidingView, TextInput, Keyboard, TouchableWithoutFeedback, Platform } from "react-native"
+import QRCode from 'react-native-qrcode-svg';
 
 export default function HomeScreen({ navigation }) {
 
     const [amount, setAmount] = useState('');
-
+    
     //Generar QR
+    const [qrValue, setQrValue] = useState(null);
     const handleTransfer = () => {
         console.log('Generar QR');
-        // Agregar lógica para generar el QR.
-      }
+        if (amount) {
+            setQrValue(`TRANSFER:${amount}`);  // Aquí pones el valor que desees que contenga el QR
+        }
+    }
 
     return (
         <KeyboardAvoidingView
@@ -32,21 +36,32 @@ export default function HomeScreen({ navigation }) {
                   onChangeText={setAmount}
                  />
                 </View>
-                <View>
+                <View style={styles.btnsContainer}> 
                   <TouchableOpacity
                    style={styles.btnTransfer}
                    onPress={handleTransfer}
                    >
                     <Text style={styles.textTransfer}>Generar QR</Text>
                   </TouchableOpacity>
-                </View>
-                <View>
                   <TouchableOpacity
                     style={styles.btnClose}
                     onPress={() => navigation.navigate("HomeScreen")}
                    >
                     <Text style={styles.textClose}>Cerrar</Text>
                   </TouchableOpacity>
+                </View>
+                <View style={styles.qrContainer}>
+                            {qrValue && (
+                                <QRCode
+                                    value={qrValue}
+                                    size={200}  // Tamaño del QR
+                                    color="black"
+                                    backgroundColor="white"
+                                />
+                            )}
+                        </View>
+                <View>
+                  
                 </View>
               </View>
             </View>
@@ -160,4 +175,13 @@ const styles = StyleSheet.create({
         fontFamily: "inter",
         fontWeight: "bold"
     },
+    qrContainer: {
+      marginTop: 30,
+      alignItems: 'center',
+      justifyContent: 'center',
+  },
+  btnsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
 })
