@@ -1,11 +1,28 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Image, ImageBackground, Alert } from "react-native"
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  Image,
+  ImageBackground,
+  Alert,
+  FlatList,
+  ActivityIndicator,
+  Platform
+} from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function HomeScreen({ navigation }) {
 
-  const [data, setData] = useState([])
+  const [userData, setUserData] = useState([]);
+  const [dataToList, setDataToList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const ids = [];
+  
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -21,13 +38,14 @@ export default function HomeScreen({ navigation }) {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // Incluir el token en el header
+            'Authorization': `Bearer ${token}`,
           }
         });
 
         if (response.status === 200) {
           const jsonData = await response.json();
-          setData(jsonData.data[0])
+          setUserData(jsonData.data[0]);
+          return jsonData.data[0];
         }
       } catch (error) {
         Alert.alert('Error', 'No se pudo conectar con el servidor');
@@ -48,21 +66,102 @@ export default function HomeScreen({ navigation }) {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // Incluir el token en el header
+            'Authorization': `Bearer ${token}`,
           }
         });
 
         if (response.status === 200) {
           const jsonData = await response.json();
-          setData(jsonData.data)
+
+          jsonData.data.forEach((transaction) => {
+            if (transaction.user_orig_id !== userData.id && !ids.includes(transaction.user_orig_id)) {
+              ids.push(transaction.user_orig_id);
+            }
+            if (transaction.user_dest_id !== userData.id && !ids.includes(transaction.user_dest_id)) {
+              ids.push(transaction.user_dest_id);
+            }
+          })
+          console.log(ids)
+          return { ids: ids, transactions: jsonData.data };
         }
       } catch (error) {
         Alert.alert('Error', 'No se pudo conectar con el servidor');
         console.error(error);
       }
     };
-    fetchUserData();
-    fetchUserTransactions();
+
+    const fetchUsersNames = async (ids) => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+
+        if (!token) {
+          Alert.alert('Error', 'No se encontró el token de autenticación');
+          return;
+        }
+
+        const queryString = ids.map(id => `id=${id}`).join('&');
+
+        const response = await fetch(`http://192.168.1.67:3000/users/names?${queryString}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          const jsonData = await response.json();
+          return jsonData.data;
+
+        }
+      } catch (error) {
+        Alert.alert('Error', 'No se pudo conectar con el servidor');
+        console.error(error);
+      }
+    };
+
+    const fetchInOrder = async () => {
+      try {
+        const userDataa = await fetchUserData();
+        const { ids, transactions } = await fetchUserTransactions();
+        const usersNames = await fetchUsersNames(ids);
+
+        const tempDataToList = [...dataToList];
+
+        for (const transaction of transactions) {
+          console.log(transaction)
+          let tempID;
+          let tempUser;
+          
+
+          if (transaction.user_orig_id !== userDataa.id) {
+            tempID = transaction.user_orig_id;
+            tempUser = usersNames.find(user => user.id == tempID);
+          } else {
+            tempID = transaction.user_dest_id;
+            tempUser = usersNames.find(user => user.id == tempID);
+          }
+          tempDataToList.push({
+            id: tempID,
+            name: `${tempUser.name} ${tempUser.surname}`,
+            amount: transaction.amount,
+            date: transaction.date.slice(0, 10),
+            status: 'default',
+          });
+        }
+
+        setDataToList(tempDataToList)
+
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 3000);
+
+      } catch (error) {
+        console.error('Error en alguna de las peticiones:', error);
+      }
+
+    }
+    fetchInOrder();
   }, []);
 
   const handleLogout = async () => {
@@ -85,76 +184,86 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    <ImageBackground
-      source={require('../assets/backgroundv2.png')}
-      style={styles.container}
-    >
-      <View style={styles.header}>
-        <Text style={styles.greeting}>Bienvenido, {data.name}</Text>
-        <TouchableOpacity
-          onPress={handleLogout}
-        >
-          <Image style={styles.logout} source={require('../assets/logout.png')} />
-        </TouchableOpacity>
+    isLoading || dataToList.length === 0 ? (
+      <View style={styles.loadingScreen}>
+        <View style={styles.logoContainer}>
+            <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
+          </View>
+        <ActivityIndicator size="small" color="#000" />
+        <Text style={styles.loadingText}>Conectando a Banca Móvil...</Text>
       </View>
-      <View style={styles.balanceContainer}>
-        <View>
-          <Text style={styles.balanceLabel}>Saldo actual</Text>
-          <Text style={styles.balance}>${data.balance}</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.btnAddBalance}
-          onPress={() => navigation.navigate("AddBalanceScreen")}
-        >
-          <Text style={styles.btnAdd}></Text>
-        </TouchableOpacity>
+    ) : (
 
-      </View>
-      {/* View de miniHistorial */}
-      <View style={styles.historyContainer}>
-        <TouchableOpacity style={styles.historyItem}>
-          <View style={styles.historyItemTop}>
-            <Text style={styles.historyItemName}>Sergio Tabula</Text>
-            <Text style={styles.historyItemDate}>2024-12-02</Text>
+      < ImageBackground
+        source={require('../assets/backgroundv2.png')}
+        style={styles.container}
+      >
+        <View style={styles.header}>
+          <Text style={styles.greeting}>Bienvenido, {userData.name}</Text>
+          <TouchableOpacity
+            onPress={handleLogout}
+          >
+            <Image style={styles.logout} source={require('../assets/logout.png')} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.balanceContainer}>
+          <View>
+            <Text style={styles.balanceLabel}>Saldo actual</Text>
+            <Text style={styles.balance}>${userData.balance}</Text>
           </View>
-          <View style={styles.historyItemMoney}>
-            <Text style={styles.historyItemAmount}>$328.00</Text>
-            <Text style={styles.historyItemStatus}>Completado</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.historyItem}>
-          <View style={styles.historyItemTop}>
-            <Text style={styles.historyItemName}>Natanael Cano</Text>
-            <Text style={styles.historyItemDate}>02/09/24</Text>
-          </View>
-          <View style={styles.historyItemMoney}>
-            <Text style={styles.historyItemAmount}>$254.00</Text>
-            <Text style={styles.historyItemStatus}>Creado</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.historySeeMore}
-          onPress={() => navigation.navigate("HistoryScreen")}
-        >
-          <Text style={styles.historySeeMoreLabel}>Ver más</Text>
-        </TouchableOpacity>
-      </View>
-      {/* View de miniHistorial */}
-      <View style={styles.btnsContainer}>
-        <TouchableOpacity
-          style={styles.btnReceive}
-          onPress={() => { }}//Abrir camara para escanear QR
-        >
-          <Text style={styles.btnText}>Recibir</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.btnTransfer}
-          onPress={() => navigation.navigate("TransferScreen")}
-        >
-          <Text style={styles.btnText}>Transferir</Text>
-        </TouchableOpacity>
-      </View>
-    </ImageBackground>
+          <TouchableOpacity
+            style={styles.btnAddBalance}
+            onPress={() => navigation.navigate("AddBalanceScreen")}
+          >
+            <Text style={styles.btnAdd}></Text>
+          </TouchableOpacity>
+
+        </View>
+        {/* View de miniHistorial */}
+        <View style={styles.historyContainer}>
+          {console.log('Contenido de dataToList:', dataToList)}
+          <FlatList
+            data={dataToList}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.historyItem}>
+                <View style={styles.historyItemTop}>
+                  <Text style={styles.historyItemName}>{item.name}</Text>
+                  <Text style={styles.historyItemDate}>{item.date}</Text>
+                </View>
+                <View style={styles.historyItemMoney}>
+                  <Text style={styles.historyItemAmount}>${item.amount}</Text>
+                  <Text style={styles.historyItemStatus}>{item.status}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.id.toString()}
+            ListEmptyComponent={<Text>No hay datos para mostrar</Text>}
+          />
+          <TouchableOpacity
+            style={styles.historySeeMore}
+            onPress={() => navigation.navigate("HistoryScreen")}
+          >
+            <Text style={styles.historySeeMoreLabel}>Ver más</Text>
+          </TouchableOpacity>
+        </View>
+        {/* View de miniHistorial */}
+        <View style={styles.btnsContainer}>
+          <TouchableOpacity
+            style={styles.btnReceive}
+            onPress={() => { }}//Abrir camara para escanear QR
+          >
+            <Text style={styles.btnText}>Recibir</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btnTransfer}
+            onPress={() => navigation.navigate("TransferScreen")}
+          >
+            <Text style={styles.btnText}>Transferir</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground >
+
+    )
   );
 }
 
@@ -282,7 +391,7 @@ const styles = StyleSheet.create({
     fontFamily: "inter",
     fontSize: 16,
     opacity: 0.6,
-    marginTop: 10,
+    marginBottom: 6,
 
   },
   historySeeMoreLabel: {
@@ -339,4 +448,31 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     //opacity: 0.6,
   },
+  loadingScreen: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: Platform.select({
+      android: -30,
+      ios: 0,
+    }),
+  },
+  logo: {
+    width: 320,
+    height: 128,
+  },
+  loadingText: {
+    fontFamily: "inter",
+    fontSize: 20,
+    color: '#000',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    marginTop: 50
+
+  },
+
 });
