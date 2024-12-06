@@ -34,7 +34,7 @@ export default function HomeScreen({ navigation }) {
           return;
         }
 
-        const response = await fetch('http://192.168.1.67:3000/user/data', {
+        const response = await fetch('http://192.168.1.182:3000/user/data', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export default function HomeScreen({ navigation }) {
           return;
         }
 
-        const response = await fetch('http://192.168.1.67:3000/user/lastTransactions', {
+        const response = await fetch('http://192.168.1.182:3000/user/lastTransactions', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ export default function HomeScreen({ navigation }) {
 
         const queryString = ids.map(id => `id=${id}`).join('&');
 
-        const response = await fetch(`http://192.168.1.67:3000/users/names?${queryString}`, {
+        const response = await fetch(`http://192.168.1.182:3000/users/names?${queryString}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -168,7 +168,7 @@ export default function HomeScreen({ navigation }) {
     try {
       const token = await AsyncStorage.getItem('jwtToken');
       if (token) {
-        await fetch('http://192.168.1.67:3000/logout', {
+        await fetch('http://192.168.1.182:3000/logout', {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -184,15 +184,15 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    isLoading || dataToList.length === 0 ? (
-      <View style={styles.loadingScreen}>
-        <View style={styles.logoContainer}>
-            <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
-          </View>
-        <ActivityIndicator size="small" color="#000" />
-        <Text style={styles.loadingText}>Conectando a Banca Móvil...</Text>
-      </View>
-    ) : (
+    // isLoading || dataToList.length === 0 ? (
+    //   <View style={styles.loadingScreen}>
+    //     <View style={styles.logoContainer}>
+    //         <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
+    //       </View>
+    //     <ActivityIndicator size="small" color="#000" />
+    //     <Text style={styles.loadingText}>Conectando a Banca Móvil...</Text>
+    //   </View>
+    // ) : (
 
       < ImageBackground
         source={require('../assets/backgroundv2.png')}
@@ -263,7 +263,7 @@ export default function HomeScreen({ navigation }) {
         </View>
       </ImageBackground >
 
-    )
+    // )
   );
 }
 
