@@ -1,5 +1,12 @@
 import { useState } from "react"
-import { StyleSheet, View, TouchableOpacity, Text, TextInput, Keyboard, TouchableWithoutFeedback, Platform } from "react-native"
+import { StyleSheet, 
+  View, 
+  TouchableOpacity, 
+  Text, 
+  TextInput, 
+  Keyboard, 
+  TouchableWithoutFeedback, 
+  Platform } from "react-native"
 import QRCode from 'react-native-qrcode-svg';
 
 export default function HomeScreen({ navigation }) {
