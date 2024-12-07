@@ -28,7 +28,7 @@ export default function HistoryScreen({ navigation }) {
                     return;
                 }
 
-                const response = await fetch('http://192.168.1.67:3000/user/allTransactions', {
+                const response = await fetch('http://192.168.1.70:3000/user/allTransactions', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export default function HistoryScreen({ navigation }) {
 
                 const queryString = ids.map(id => `id=${id}`).join('&');
 
-                const response = await fetch(`http://192.168.1.67:3000/users/names?${queryString}`, {
+                const response = await fetch(`http://192.168.1.70:3000/users/names?${queryString}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

@@ -9,16 +9,31 @@ import {
   Alert,
   FlatList,
   ActivityIndicator,
-  Platform
+  Platform,
+  SafeAreaView,
+  Pressable,
 } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useCameraPermissions } from "expo-camera";
+import { Camera } from 'expo-camera';
 
 export default function HomeScreen({ navigation }) {
 
   const [userData, setUserData] = useState([]);
   const [dataToList, setDataToList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [permission, requestPermission] = useCameraPermissions();
+  const isPermissionGranted = Boolean(permission?.granted);
+
+  const handleRequestPermission = async () => {
+    const permissionResponse = await requestPermission();
+    if (permissionResponse.granted) {
+      Alert.alert("Permission granted", "You can now use the camera.");
+    } else {
+      Alert.alert("Permission denied", "Camera permission is required.");
+    }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,7 +45,7 @@ export default function HomeScreen({ navigation }) {
           return;
         }
 
-        const response = await fetch('http://192.168.1.67:3000/user/data', {
+        const response = await fetch('http://192.168.1.70:3000/user/data', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -58,7 +73,7 @@ export default function HomeScreen({ navigation }) {
           return;
         }
 
-        const response = await fetch('http://192.168.1.67:3000/user/lastTransactions', {
+        const response = await fetch('http://192.168.1.70:3000/user/lastTransactions', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -98,7 +113,7 @@ export default function HomeScreen({ navigation }) {
 
         const queryString = ids.map(id => `id=${id}`).join('&');
 
-        const response = await fetch(`http://192.168.1.67:3000/users/names?${queryString}`, {
+        const response = await fetch(`http://192.168.1.70:3000/users/names?${queryString}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -165,7 +180,7 @@ export default function HomeScreen({ navigation }) {
     try {
       const token = await AsyncStorage.getItem('jwtToken');
       if (token) {
-        await fetch('http://192.168.1.67:3000/logout', {
+        await fetch('http://192.168.1.70:3000/logout', {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -180,6 +195,19 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
+  const handleCameraAccess = async () => {
+    if (isPermissionGranted) {
+      navigation.navigate("Permission");
+    } else {
+      const permissionResponse = await requestPermission();
+      if (permissionResponse.granted) {
+        navigation.navigate("Permission");
+      } else {
+        Alert.alert("Permission denied", "Camera permission is required.");
+      }
+    }
+  };
+
   return (
     isLoading || dataToList.length === 0 ? (
       <View style={styles.loadingScreen}>
@@ -190,11 +218,8 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.loadingText}>Conectando a Banca Móvil...</Text>
       </View>
     ) : (
-
-      < ImageBackground
-        source={require('../assets/backgroundv2.png')}
-        style={styles.container}
-      >
+      
+      < ImageBackground source={require('../assets/backgroundv2.png')} style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.greeting}>Bienvenido, {userData.name}</Text>
           <TouchableOpacity
@@ -247,7 +272,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.btnsContainer}>
           <TouchableOpacity
             style={styles.btnReceive}
-            onPress={() => { }}//Abrir camara para escanear QR
+            onPress={handleCameraAccess}//Abrir camara para escanear QR
           >
             <Text style={styles.btnText}>Recibir</Text>
           </TouchableOpacity>
@@ -258,6 +283,7 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.btnText}>Transferir</Text>
           </TouchableOpacity>
         </View>
+
       </ImageBackground >
 
     )
@@ -471,5 +497,6 @@ const styles = StyleSheet.create({
     marginTop: 50
 
   },
+
 
 });

@@ -6,6 +6,7 @@ import HistoryScreen from './Screens/HistoryScreen.js'
 import AddBalanceScreen from './Screens/AddBalanceScreen.js'
 import TransferScreen from './Screens/TransferScreen.js'
 import ReceiveScreen from './Screens/ReceiveScreen.js'
+import Permission from './Screens/Permission.js'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -23,6 +24,7 @@ export default function App() {
         <Stack.Screen name='AddBalanceScreen' component={AddBalanceScreen}/>
         <Stack.Screen name='TransferScreen' component={TransferScreen} />
         <Stack.Screen name='ReceiveScreen' component={ReceiveScreen} />
+        <Stack.Screen name='Permission' component={Permission} />
       </Stack.Navigator>
     </NavigationContainer>
   );

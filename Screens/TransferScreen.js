@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Text, KeyboardAvoidingView, TextInp
 
 export default function HomeScreen({ navigation }) {
 
-    const [amount, setAmount] = useState('');
+    const [amount, setAmount] = useState('')
 
     //Generar QR
     const handleTransfer = () => {
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
         width: 128,
         height: 40,
         borderRadius: 100,
-        marginTop: -15,
+        marginTop: 50,
 
     },
     textClose: {
