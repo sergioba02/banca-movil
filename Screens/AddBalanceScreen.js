@@ -1,65 +1,126 @@
-import { StyleSheet, View, TouchableOpacity, Text, TextInput, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native"
+import {
+    StyleSheet,
+    View,
+    TouchableOpacity,
+    Text,
+    TextInput,
+    Platform,
+    TouchableWithoutFeedback,
+    Keyboard,
+    Alert
+} from "react-native"
+import { useUserData } from "../context/userDataProvider";
+import { useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function HomeScreen({ navigation }) {
 
+    const { userData } = useUserData();
+    const [amount, setAmount] = useState();
+    const newAmount = parseInt(amount) + parseInt(userData.balance);
+
+    const ipComputadora = "192.168.1.67";
+
+    const handleAddBalance = async () => {
+        try {
+            if (isNaN(newAmount) || newAmount <= 0) {
+                Alert.alert('Error', 'La cantidad no es válida');
+                return;
+            }
+
+            const token = await AsyncStorage.getItem('token');
+
+            if (!token) {
+                Alert.alert('Error', 'No se encontró el token de autenticación');
+                return;
+            }
+            const response = await fetch(`http://${ipComputadora}:3000/user/addBalance`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    amount: parseInt(newAmount),
+                }),
+            });
+
+            if (response.status === 200) {
+                setAmount('');
+                Alert.alert('Depósito exitoso', 'Disfrute de su nuevo saldo', [
+                    { text: 'Aceptar', onPress: () => { navigation.replace("HomeScreen"); } },
+                ]);
+            }
+        } catch (error) {
+            Alert.alert('Error', 'No se pudo conectar con el servidor');
+            console.error(error);
+        }
+    };
+
 
     return (
-        <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-            keyboardVerticalOffset={-220}
-        >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.container}>
-                    <View style={styles.header}>
-                        <Text style={styles.label}>Depositar a mi cuenta</Text>
-                    </View>
-                    <View style={styles.inputt}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder={'Cantidad'}
-                            placeholderTextColor='#747474'
-                            keyboardType="numeric"
-                        />
-                    </View>
-                    <View>
-                        <TouchableOpacity
-                            style={styles.btnAdd}
-                        >
-                            <Text style={styles.textAdd}>Agregar</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View>
-                        <TouchableOpacity
-                            style={styles.btnClose}
-                            onPress={() => navigation.navigate("HomeScreen")}
-                        >
-                            <Text style={styles.textClose}>Cerrar</Text>
-                        </TouchableOpacity>
-                    </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+                <View style={styles.labelsContainer}>
+                    <Text style={styles.label}>Cuenta: {userData.num_account}</Text>
+                    <Text style={styles.label}>Depositar a mi cuenta</Text>
                 </View>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+                <View style={styles.inputt}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder={'$0.00'}
+                        placeholderTextColor='#747474'
+                        keyboardType="numeric"
+                        maxLength={8}
+                        onChangeText={setAmount}
+                    />
+                </View>
+                <View>
+                    <TouchableOpacity
+                        style={styles.btnAdd}
+                        onPress={() => {
+                            console.log('amount:', newAmount)
+                            handleAddBalance()
+                        }}
+                    >
+                        <Text style={styles.textAdd}>Agregar</Text>
+                    </TouchableOpacity>
+                </View>
+                <View>
+                    <TouchableOpacity
+                        style={styles.btnClose}
+                        onPress={() => navigation.navigate("HomeScreen")}
+                    >
+                        <Text style={styles.textClose}>Cerrar</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </TouchableWithoutFeedback>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: '#218DD4',
+    },
+    labelsContainer: {
+        alignItems: 'flex-start',
+        marginTop: 100,
+        width: 362,
     },
     inputt: {
         marginBottom: Platform.select({
             android: 0,
-            ios: 0,
+            ios: 25,
 
         }),
     },
     input: {
         height: 40,
-        width: 264,
+        width: 362,
         padding: 10,
         borderRadius: 14,
         fontSize: 18,
@@ -85,7 +146,7 @@ const styles = StyleSheet.create({
         color: 'black',
         color: '#FFFFFF',
         marginTop: 0,
-        marginBottom: 0,
+        marginBottom: 20,
 
     },
     btnAdd: {
@@ -94,10 +155,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderWidth: 3,
         borderColor: '#FFFFFF',
-        width: 128,
+        width: 362,
         height: 40,
         borderRadius: 100,
-        marginTop: 0,
+        marginBottom: 520,
 
     },
     textAdd: {
@@ -113,11 +174,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#5DADE2',
         borderWidth: 3,
         borderColor: '#5DADE2',
-        width: 128,
+        width: 362,
         height: 40,
         borderRadius: 100,
         marginTop: 0,
-        marginBottom: 1000,
+        marginBottom: 0,
 
     },
     textClose: {
@@ -125,6 +186,6 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontFamily: "inter",
         fontWeight: "bold"
-    
+
     },
 });

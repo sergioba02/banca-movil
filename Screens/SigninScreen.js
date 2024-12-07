@@ -10,7 +10,6 @@ export default function LoginScreen({ navigation }) {
 
   const ipComputadora = "192.168.1.67";
 
-  // Expresión regular para validar email
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
     return emailRegex.test(email);
@@ -101,6 +100,7 @@ export default function LoginScreen({ navigation }) {
                 placeholderTextColor='#747474'
                 secureTextEntry={true}
                 onChangeText={setPassword}
+                autoCapitalize="none"
 
               />
             </View>

@@ -149,7 +149,7 @@ export const UserProvider = ({ children }) => {
 
         }
         fetchInOrder();
-    }, []);
+    }, [AsyncStorage]);
 
     return (
         <UserContext.Provider value={{userData, dataToList}}>

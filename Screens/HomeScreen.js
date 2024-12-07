@@ -41,7 +41,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    dataToList.length === 0 ? (
+    dataToList.length === null ? (
       <View style={styles.loadingScreen}>
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />

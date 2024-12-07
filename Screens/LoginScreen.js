@@ -83,6 +83,7 @@ export default function LoginScreen({ navigation }) {
                 placeholderTextColor='#747474'
                 keyboardType="email-address"
                 onChangeText={setEmail}
+                autoCapitalize="none"
 
               />
             </View>
@@ -93,6 +94,7 @@ export default function LoginScreen({ navigation }) {
                 placeholderTextColor='#747474'
                 secureTextEntry={true}
                 onChangeText={setPassword}
+                autoCapitalize="none"
 
               />
             </View>
