@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -13,20 +14,14 @@ import {
   Pressable,
 } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
-<<<<<<< HEAD
 import { useCameraPermissions } from "expo-camera";
-import { Camera } from 'expo-camera';
-=======
-import { useUserData } from "../context/userDataProvider";
-
->>>>>>> 13a32677f16bc6ce61ae6a2121dcccd4fb1eb58b
 
 export default function HomeScreen({ navigation }) {
 
-  const { userData, dataToList } = useUserData();
-  console.log('UserData desde Home: ', userData);
+  const [userData, setUserData] = useState([]);
+  const [dataToList, setDataToList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-<<<<<<< HEAD
   const [permission, requestPermission] = useCameraPermissions();
   const isPermissionGranted = Boolean(permission?.granted);
 
@@ -179,19 +174,12 @@ export default function HomeScreen({ navigation }) {
     }
     fetchInOrder();
   }, []);
-=======
-  const ipComputadora = "192.168.1.67";
->>>>>>> 13a32677f16bc6ce61ae6a2121dcccd4fb1eb58b
 
   const handleLogout = async () => {
     try {
       const token = await AsyncStorage.getItem('jwtToken');
       if (token) {
-<<<<<<< HEAD
         await fetch('http://192.168.1.70:3000/logout', {
-=======
-        await fetch(`http://${ipComputadora}:3000/logout`, {
->>>>>>> 13a32677f16bc6ce61ae6a2121dcccd4fb1eb58b
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -220,11 +208,11 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    dataToList.length === null ? (
+    isLoading || dataToList.length === 0 ? (
       <View style={styles.loadingScreen}>
         <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
-        </View>
+            <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
+          </View>
         <ActivityIndicator size="small" color="#000" />
         <Text style={styles.loadingText}>Conectando a Banca Móvil...</Text>
       </View>
@@ -264,14 +252,7 @@ export default function HomeScreen({ navigation }) {
                   <Text style={styles.historyItemDate}>{item.date}</Text>
                 </View>
                 <View style={styles.historyItemMoney}>
-                  <Text
-                    style={[
-                      styles.historyItemAmount,
-                      { color: item.type === 'income' ? 'green' : 'red' }
-                    ]}
-                  >
-                    {item.type === 'income' ? '+' : '-'}${item.amount}
-                  </Text>
+                  <Text style={styles.historyItemAmount}>${item.amount}</Text>
                   <Text style={styles.historyItemStatus}>{item.status}</Text>
                 </View>
               </TouchableOpacity>
@@ -281,7 +262,7 @@ export default function HomeScreen({ navigation }) {
           />
           <TouchableOpacity
             style={styles.historySeeMore}
-            onPress={() => navigation.replace("HistoryScreen")}
+            onPress={() => navigation.navigate("HistoryScreen")}
           >
             <Text style={styles.historySeeMoreLabel}>Ver más</Text>
           </TouchableOpacity>
@@ -489,10 +470,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     //opacity: 0.6,
   },
-  loadingScreen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+  loadingScreen: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
   },
   logoContainer: {
     alignItems: 'center',
