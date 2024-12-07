@@ -8,11 +8,15 @@ import {
   Alert,
   FlatList,
   ActivityIndicator,
-  Platform
+  Platform,
+  SafeAreaView,
+  Pressable,
 } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserData } from "../context/userDataProvider";
 
+import { useCameraPermissions } from "expo-camera";
+import { Camera } from 'expo-camera';
 
 export default function HomeScreen({ navigation }) {
 
@@ -20,6 +24,18 @@ export default function HomeScreen({ navigation }) {
   console.log('UserData desde Home: ', userData);
 
   const ipComputadora = "192.168.1.67";
+
+  const [permission, requestPermission] = useCameraPermissions();
+  const isPermissionGranted = Boolean(permission?.granted);
+
+  const handleRequestPermission = async () => {
+    const permissionResponse = await requestPermission();
+    if (permissionResponse.granted) {
+      Alert.alert("Permission granted", "You can now use the camera.");
+    } else {
+      Alert.alert("Permission denied", "Camera permission is required.");
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -40,6 +56,19 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
+  const handleCameraAccess = async () => {
+    if (isPermissionGranted) {
+      navigation.navigate("Permission");
+    } else {
+      const permissionResponse = await requestPermission();
+      if (permissionResponse.granted) {
+        navigation.navigate("Permission");
+      } else {
+        Alert.alert("Permission denied", "Camera permission is required.");
+      }
+    }
+  };
+
   return (
     dataToList.length === 0 ? (
       <View style={styles.loadingScreen}>
@@ -50,11 +79,8 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.loadingText}>Conectando a Banca Móvil...</Text>
       </View>
     ) : (
-
-      < ImageBackground
-        source={require('../assets/backgroundv2.png')}
-        style={styles.container}
-      >
+      
+      < ImageBackground source={require('../assets/backgroundv2.png')} style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.greeting}>Bienvenido, {userData.name}</Text>
           <TouchableOpacity
@@ -114,7 +140,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.btnsContainer}>
           <TouchableOpacity
             style={styles.btnReceive}
-            onPress={() => { }}//Abrir camara para escanear QR
+            onPress={handleCameraAccess}//Abrir camara para escanear QR
           >
             <Text style={styles.btnText}>Recibir</Text>
           </TouchableOpacity>
@@ -125,6 +151,7 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.btnText}>Transferir</Text>
           </TouchableOpacity>
         </View>
+
       </ImageBackground >
 
     )
@@ -338,5 +365,6 @@ const styles = StyleSheet.create({
     marginTop: 50
 
   },
+
 
 });
