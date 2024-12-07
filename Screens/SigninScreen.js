@@ -8,7 +8,8 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // Expresión regular para validar email
+  const ipComputadora = "192.168.1.67";
+
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
     return emailRegex.test(email);
@@ -16,7 +17,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleRegister = async () => {
     try {
-      const response = await fetch('http://192.168.1.70:3000/auth/register', {
+      const response = await fetch(`http://${ipComputadora}:3000/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,6 +100,7 @@ export default function LoginScreen({ navigation }) {
                 placeholderTextColor='#747474'
                 secureTextEntry={true}
                 onChangeText={setPassword}
+                autoCapitalize="none"
 
               />
             </View>

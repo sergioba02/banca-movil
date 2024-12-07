@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, 
-    View, 
-    TouchableOpacity, 
-    Text, 
-    Image, 
-    FlatList, 
-    Alert, 
+import {
+    StyleSheet,
+    View,
+    TouchableOpacity,
+    Text,
+    Image,
+    FlatList,
+    Alert,
     ActivityIndicator,
     Platform
- } from "react-native"
+} from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HistoryScreen({ navigation }) {
 
     const [dataToList, setDataToList] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+
+    const ipComputadora = "192.168.1.67";
 
     useEffect(() => {
 
@@ -28,7 +30,7 @@ export default function HistoryScreen({ navigation }) {
                     return;
                 }
 
-                const response = await fetch('http://192.168.1.70:3000/user/allTransactions', {
+                const response = await fetch(`http://${ipComputadora}:3000/user/allTransactions`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -68,7 +70,7 @@ export default function HistoryScreen({ navigation }) {
 
                 const queryString = ids.map(id => `id=${id}`).join('&');
 
-                const response = await fetch(`http://192.168.1.70:3000/users/names?${queryString}`, {
+                const response = await fetch(`http://${ipComputadora}:3000/users/names?${queryString}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -100,13 +102,16 @@ export default function HistoryScreen({ navigation }) {
                     console.log(transaction)
                     let tempID;
                     let tempUser;
+                    let tempType;
 
                     if (transaction.user_orig_id !== userID) {
                         tempID = transaction.user_orig_id;
                         tempUser = usersNames.find(user => user.id == tempID);
+                        tempType = 'income';
                     } else {
                         tempID = transaction.user_dest_id;
                         tempUser = usersNames.find(user => user.id == tempID);
+                        tempType = 'payment';
                     }
                     tempDataToList.push({
                         id: tempID,
@@ -114,14 +119,11 @@ export default function HistoryScreen({ navigation }) {
                         amount: transaction.amount,
                         date: transaction.date.slice(0, 10),
                         status: 'default',
+                        type: tempType,
                     });
                 }
 
                 setDataToList(tempDataToList)
-
-                setTimeout(() => {
-                    setIsLoading(false);
-                }, 1500);
 
             } catch (error) {
                 console.error('Error en alguna de las peticiones:', error);
@@ -132,7 +134,7 @@ export default function HistoryScreen({ navigation }) {
 
     }, []);
     return (
-        isLoading || dataToList.length === 0 ? (
+        dataToList.length === null ? (
             <View style={styles.loadingScreen}>
                 <View style={styles.logoContainer}>
                     <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
@@ -157,7 +159,14 @@ export default function HistoryScreen({ navigation }) {
                                     <Text style={styles.historyItemDate}>{item.date}</Text>
                                 </View>
                                 <View style={styles.historyItemMoney}>
-                                    <Text style={styles.historyItemAmount}>${item.amount}</Text>
+                                    <Text
+                                        style={[
+                                            styles.historyItemAmount,
+                                            { color: item.type === 'income' ? 'green' : 'red' }
+                                        ]}
+                                    >
+                                        {item.type === 'income' ? '+' : '-'}${item.amount}
+                                    </Text>
                                     <Text style={styles.historyItemStatus}>{item.status}</Text>
                                 </View>
                             </TouchableOpacity>
@@ -170,7 +179,10 @@ export default function HistoryScreen({ navigation }) {
                 <View>
                     <TouchableOpacity
                         style={styles.btnClose}
-                        onPress={() => navigation.navigate("HomeScreen")}
+                        onPress={() => {
+                            setDataToList([])
+                            navigation.replace("HomeScreen")
+                        }}
                     >
                         <Text style={styles.textClose}>Cerrar</Text>
                     </TouchableOpacity>
@@ -273,23 +285,23 @@ const styles = StyleSheet.create({
         fontFamily: "inter",
         fontWeight: "bold"
     },
-    loadingScreen: { 
-        flex: 1, 
-        justifyContent: 'center', 
-        alignItems: 'center' 
-      },
-      logoContainer: {
+    loadingScreen: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    logoContainer: {
         alignItems: 'center',
         marginBottom: Platform.select({
-          android: -30,
-          ios: 0,
+            android: -30,
+            ios: 0,
         }),
-      },
-      logo: {
+    },
+    logo: {
         width: 320,
         height: 128,
-      },
-      loadingText: {
+    },
+    loadingText: {
         fontFamily: "inter",
         fontSize: 20,
         color: '#000',
@@ -297,6 +309,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.2,
         marginTop: 50
-    
-      },    
+
+    },
 });
