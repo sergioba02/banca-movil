@@ -23,14 +23,14 @@ export default function HomeScreen({ navigation }) {
 
   const handleLogout = async () => {
     try {
-      const token = await AsyncStorage.getItem('jwtToken');
+      const token = await AsyncStorage.getItem('token');
       if (token) {
-        await fetch(`http://${ipComputadora}:3000/logout`, {
+        await fetch(`http://${ipComputadora}:3000/auth/logout`, {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
         });
       }
-      await AsyncStorage.removeItem('jwtToken');
+      await AsyncStorage.removeItem('token');
       Alert.alert('Sesión cerrada', 'Gracias por usar Banca Móvil :)', [
         { text: 'Cerrar', onPress: () => { navigation.replace("LoginScreen"); } },
       ]);
