@@ -8,23 +8,27 @@ import TransferScreen from './Screens/TransferScreen.js'
 import ReceiveScreen from './Screens/ReceiveScreen.js'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { UserProvider } from './context/userDataProvider.js';
 
 
 const Stack = createNativeStackNavigator()
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName='LoginScreen' screenOptions={{headerShown:false}}>
-        <Stack.Screen name='LoginScreen' component={LoginScreen}/>
-        <Stack.Screen name='SigninScreen' component={SigninScreen}/>
-        <Stack.Screen name='HomeScreen' component={HomeScreen}/>
-        <Stack.Screen name='HistoryScreen' component={HistoryScreen}/>
-        <Stack.Screen name='AddBalanceScreen' component={AddBalanceScreen}/>
-        <Stack.Screen name='TransferScreen' component={TransferScreen} />
-        <Stack.Screen name='ReceiveScreen' component={ReceiveScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='LoginScreen' screenOptions={{ headerShown: false }}>
+          <Stack.Screen name='LoginScreen' component={LoginScreen} />
+          <Stack.Screen name='SigninScreen' component={SigninScreen} />
+          <Stack.Screen name='HomeScreen' component={HomeScreen} />
+          <Stack.Screen name='HistoryScreen' component={HistoryScreen} />
+          <Stack.Screen name='AddBalanceScreen' component={AddBalanceScreen} />
+          <Stack.Screen name='TransferScreen' component={TransferScreen} />
+          <Stack.Screen name='ReceiveScreen' component={ReceiveScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
+
   );
 }
 
