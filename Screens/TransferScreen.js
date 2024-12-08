@@ -8,17 +8,22 @@ import { StyleSheet,
   TouchableWithoutFeedback, 
   Platform } from "react-native"
 import QRCode from 'react-native-qrcode-svg';
+import { useUserData } from "../context/userDataProvider";
 
 export default function HomeScreen({ navigation }) {
 
+  const {userData} = useUserData();
+
   const [amount, setAmount] = useState('');
   const [concept, setConcept] = useState('');
+  const [qrValue, setQrValue] = useState('');
 
-  const [qrValue, setQrValue] = useState(null);
   const handleTransfer = () => {
-    console.log('Generar QR');
+    const jsonString = JSON.stringify({'orig_id': userData.id, 'amount': amount, 'concept': concept})
+    console.log('Generar QR: ',jsonString);
     if (amount) {
-      setQrValue(`TRANSFER:${amount}`);
+      setQrValue(jsonString);
+      
     }
   }
 
@@ -56,6 +61,12 @@ export default function HomeScreen({ navigation }) {
             onPress={handleTransfer}
           >
             <Text style={styles.textTransfer}>Generar QR</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btnDelete}
+            onPress={()=>{setQrValue(null)}}
+          >
+            <Text style={styles.textDelete}>Eliminar QR</Text>
           </TouchableOpacity>
           <View style={styles.qrContainer}>
             {qrValue && (

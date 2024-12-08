@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -10,20 +9,15 @@ import {
   FlatList,
   ActivityIndicator,
   Platform,
-  SafeAreaView,
-  Pressable,
 } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserData } from "../context/userDataProvider";
 
 import { useCameraPermissions } from "expo-camera";
-import { Camera } from 'expo-camera';
 
 export default function HomeScreen({ navigation }) {
 
-  const [userData, setUserData] = useState([]);
-  const [dataToList, setDataToList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { userData, dataToList } = useUserData();
 
   const ipComputadora = "192.168.1.67";
 
@@ -66,22 +60,22 @@ export default function HomeScreen({ navigation }) {
       if (permissionResponse.granted) {
         navigation.navigate("Permission");
       } else {
-        Alert.alert("Permission denied", "Camera permission is required.");
+        Alert.alert("Permiso denegado", "Se requiere permiso a la cámara para continuar.");
       }
     }
   };
 
   return (
-    isLoading || dataToList.length === 0 ? (
+    dataToList.length === null ? (
       <View style={styles.loadingScreen}>
         <View style={styles.logoContainer}>
-            <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
-          </View>
+          <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
+        </View>
         <ActivityIndicator size="small" color="#000" />
         <Text style={styles.loadingText}>Conectando a Banca Móvil...</Text>
       </View>
     ) : (
-      
+
       < ImageBackground source={require('../assets/backgroundv2.png')} style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.greeting}>Bienvenido, {userData.name}</Text>
@@ -116,7 +110,14 @@ export default function HomeScreen({ navigation }) {
                   <Text style={styles.historyItemDate}>{item.date}</Text>
                 </View>
                 <View style={styles.historyItemMoney}>
-                  <Text style={styles.historyItemAmount}>${item.amount}</Text>
+                  <Text
+                    style={[
+                      styles.historyItemAmount,
+                      { color: item.type === 'income' ? 'green' : 'red' }
+                    ]}
+                  >
+                    {item.type === 'income' ? '+' : '-'}${item.amount}
+                  </Text>
                   <Text style={styles.historyItemStatus}>{item.status}</Text>
                 </View>
               </TouchableOpacity>
@@ -141,7 +142,7 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnTransfer}
-            onPress={() => navigation.navigate("TransferScreen")}
+            onPress={() => navigation.replace("TransferScreen")}
           >
             <Text style={styles.btnText}>Transferir</Text>
           </TouchableOpacity>
@@ -334,10 +335,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     //opacity: 0.6,
   },
-  loadingScreen: { 
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center' 
+  loadingScreen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   logoContainer: {
     alignItems: 'center',

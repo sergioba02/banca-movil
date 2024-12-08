@@ -11,8 +11,11 @@ import { StyleSheet,
   KeyboardAvoidingView, 
   Alert } from "react-native"
   import AsyncStorage from '@react-native-async-storage/async-storage';
+  import { useUserData } from "../context/userDataProvider";
 
 export default function LoginScreen({ navigation }) {
+
+  const { fetchInOrder } = useUserData();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,6 +38,7 @@ export default function LoginScreen({ navigation }) {
       if (response.status === 200) {
         const {token} = await response.json()
         await AsyncStorage.setItem('token', token);
+        fetchInOrder();
         navigation.replace("HomeScreen");
       } else if (response.status === 404) {
         const errorData = await response.json();

@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen({ navigation }) {
 
-    const { userData } = useUserData();
+    const { userData, fetchUserData } = useUserData();
     const [amount, setAmount] = useState();
     const newAmount = parseInt(amount) + parseInt(userData.balance);
 
@@ -48,6 +48,7 @@ export default function HomeScreen({ navigation }) {
 
             if (response.status === 200) {
                 setAmount('');
+                fetchUserData();
                 Alert.alert('Depósito exitoso', 'Disfrute de su nuevo saldo', [
                     { text: 'Aceptar', onPress: () => { navigation.replace("HomeScreen"); } },
                 ]);
@@ -90,7 +91,7 @@ export default function HomeScreen({ navigation }) {
                 <View>
                     <TouchableOpacity
                         style={styles.btnClose}
-                        onPress={() => navigation.navigate("HomeScreen")}
+                        onPress={() => navigation.replace("HomeScreen")}
                     >
                         <Text style={styles.textClose}>Cerrar</Text>
                     </TouchableOpacity>

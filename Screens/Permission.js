@@ -1,48 +1,75 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Text, Alert, Linking } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, StyleSheet, Alert,} from 'react-native';
 import { CameraView } from 'expo-camera';
+import { useUserData } from "../context/userDataProvider";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ScannerOverlay from './ScannerOverlay';
 
-export default function CameraComponent() {
+export default function CameraComponent({ navigation }) {
+
+  const { userData, fetchInOrder } = useUserData();
   const cameraRef = useRef(null);
   const [scanned, setScanned] = useState(false);
-  const [qrData, setQrData] = useState(null);
 
-  const handleBarCodeScanned = ({ data }) => {
+  const ipComputadora = "192.168.1.67";
+
+  const handleTransaction = async ({ data }) => {
+
+    const qrData = JSON.parse(data);
+    console.log('qr data: ',qrData);
     if (!scanned) {
-        setScanned(true);
-        setQrData(data);
-        Alert.alert(`Código QR detectado:`, data, [
+      setScanned(true);
+      try {
+
+        const token = await AsyncStorage.getItem('token');
+
+        if (!token) {
+          Alert.alert('Error', 'No se encontró el token de autenticación');
+          return;
+        }
+        const response = await fetch(`http://${ipComputadora}:3000/createTransaction`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            // orig_id: qrData.orig_id,
+            orig_id: parseInt(qrData.orig_id),
+            dest_id: userData.id,
+            amount: parseInt(qrData.amount),
+            concept: qrData.concept
+          }),
+        });
+
+        if (response.status === 200) {
+          fetchInOrder();
+          Alert.alert(`Código QR detectado:`, data, [
             {
-                text: 'Abrir',
-                onPress: () => openLink(data),
+              text: 'Aceptar',
+              onPress: navigation.replace("HomeScreen"),
             },
-            {
-                text: 'Cancelar',
-                onPress: () => setScanned(false),
-            }
-        ]);
+          ]);
+        }
+      } catch (error) {
+        Alert.alert('Error', 'No se pudo conectar con el servidor');
+        console.error(error);
+      }
     }
-  };
 
-  const openLink = (url) => {
-    Linking.openURL(url).catch(err => 
-        console.error("Error al intentar abrir la URL", err)
-    );
-  };
-
+  }
 
   return (
     <View style={styles.container}>
-        <CameraView 
-            style={styles.camera}
-            ref={cameraRef}
-            onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-            barcodeScannerSettings={{
-                barcodeTypes: ['qr'],
-            }}
-        />
-        <Text style={styles.text}>Enfoca el codigo QR</Text>
-        {qrData && <Text style={styles.text}>Datos escaneados: {qrData}</Text>}
+      <CameraView
+        style={scanned ? StyleSheet.absoluteFillObject : styles.camera}
+        ref={cameraRef}
+        onBarcodeScanned={scanned ? undefined : handleTransaction}
+        barcodeScannerSettings={{
+          barcodeTypes: ['qr'],
+        }}
+      />
+      <ScannerOverlay />
     </View>
   );
 }
@@ -56,11 +83,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-  },
-  text: {
-    color: 'white',
-    fontSize: 18,
-    padding: 20,resizeMode: 'vertical',
   },
 });
 
