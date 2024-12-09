@@ -1,29 +1,31 @@
 import { useState } from "react"
-import { StyleSheet, 
-  View, 
-  TouchableOpacity, 
-  Text, 
-  TextInput, 
-  Keyboard, 
-  TouchableWithoutFeedback, 
-  Platform } from "react-native"
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  TextInput,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Platform
+} from "react-native"
 import QRCode from 'react-native-qrcode-svg';
 import { useUserData } from "../context/userDataProvider";
 
 export default function HomeScreen({ navigation }) {
 
-  const {userData} = useUserData();
+  const { userData } = useUserData();
 
   const [amount, setAmount] = useState('');
   const [concept, setConcept] = useState('');
   const [qrValue, setQrValue] = useState('');
 
   const handleTransfer = () => {
-    const jsonString = JSON.stringify({'orig_id': userData.id, 'amount': amount, 'concept': concept})
-    console.log('Generar QR: ',jsonString);
+    const jsonString = JSON.stringify({ 'orig_id': userData.id, 'amount': amount, 'concept': concept })
+    console.log('Generar QR: ', jsonString);
     if (amount) {
       setQrValue(jsonString);
-      
+
     }
   }
 
@@ -37,6 +39,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.textInputContainer}>
           <TextInput
             style={styles.input}
+            value={amount}
             placeholder={'$0.00'}
             placeholderTextColor='#747474'
             keyboardType="decimal-pad"
@@ -49,6 +52,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.textInputContainer}>
           <TextInput
             style={styles.input}
+            value={concept}
             placeholder={'Concepto'}
             placeholderTextColor='#747474'
             onChangeText={setConcept}
@@ -58,16 +62,14 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.btnsContainer}>
           <TouchableOpacity
             style={styles.btnTransfer}
-            onPress={handleTransfer}
+            onPress={()=>{
+              Keyboard.dismiss();
+              handleTransfer();
+            }}
           >
             <Text style={styles.textTransfer}>Generar QR</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.btnDelete}
-            onPress={()=>{setQrValue(null)}}
-          >
-            <Text style={styles.textDelete}>Eliminar QR</Text>
-          </TouchableOpacity>
+
           <View style={styles.qrContainer}>
             {qrValue && (
               <QRCode
@@ -78,6 +80,19 @@ export default function HomeScreen({ navigation }) {
               />
             )}
           </View>
+          {qrValue && (
+            <TouchableOpacity
+              style={styles.btnDelete}
+              onPress={() => { 
+                setQrValue(null);
+                setAmount('');
+                setConcept('');
+              }}
+            >
+              <Text style={styles.textDelete}>Eliminar QR</Text>
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity
             style={styles.btnClose}
             onPress={() => navigation.replace("HomeScreen")}
@@ -131,6 +146,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#000',
     fontFamily: "inter",
+    fontWeight: 'bold'
 
   },
 
@@ -173,7 +189,7 @@ const styles = StyleSheet.create({
     }),
     marginBottom: Platform.select({
       android: 30,
-      ios: 80,
+      ios: 60,
     }),
   },
   textTransfer: {
@@ -182,7 +198,33 @@ const styles = StyleSheet.create({
     fontFamily: "inter",
     fontWeight: "bold"
   },
+  btnDelete: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: Platform.select({
+      android: 362,
+      ios: 362,
+    }),
+    height: 40,
+    borderRadius: 28,
+    backgroundColor: 'red',
+    marginTop: Platform.select({
+      android: 30,
+      ios: -20,
+    }),
+    marginBottom: Platform.select({
+      android: 30,
+      ios: 40,
+    }),
+  },
+  textDelete: {
+    fontSize: 20,
+    color: '#FFFFFF',
+    fontFamily: "inter",
+    fontWeight: "bold"
+  },
   btnClose: {
+    position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
@@ -194,7 +236,7 @@ const styles = StyleSheet.create({
     }),
     height: 40,
     borderRadius: 100,
-    marginTop: -15,
+    top: 420
 
   },
   textClose: {
@@ -208,7 +250,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: Platform.select({
       android: 135,
-      ios: 135,
+      ios: 100,
     }),
   },
   btnsContainer: {

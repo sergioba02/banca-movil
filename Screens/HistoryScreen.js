@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
     StyleSheet,
     View,
@@ -6,133 +5,16 @@ import {
     Text,
     Image,
     FlatList,
-    Alert,
     ActivityIndicator,
     Platform
 } from "react-native"
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUserData } from "../context/userDataProvider";
+import { useState } from "react";
 
 export default function HistoryScreen({ navigation }) {
 
-    const [dataToList, setDataToList] = useState([]);
+    const { dataToList, fetchInOrder } = useUserData();
 
-    const ipComputadora = "192.168.1.67";
-
-    useEffect(() => {
-
-        const fetchUserTransactions = async () => {
-            try {
-                const ids = [];
-                const token = await AsyncStorage.getItem('token');
-
-                if (!token) {
-                    Alert.alert('Error', 'No se encontró el token de autenticación');
-                    return;
-                }
-
-                const response = await fetch(`http://${ipComputadora}:3000/user/allTransactions`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    }
-                });
-
-                if (response.status === 200) {
-
-                    const jsonData = await response.json();
-
-                    jsonData.data.forEach((transaction) => {
-                        if (transaction.user_orig_id !== jsonData.id && !ids.includes(transaction.user_orig_id)) {
-                            ids.push(transaction.user_orig_id);
-                        }
-                        if (transaction.user_dest_id !== jsonData.id && !ids.includes(transaction.user_dest_id)) {
-                            ids.push(transaction.user_dest_id);
-                        }
-                    })
-                    console.log(ids)
-                    return { ids: ids, userID: jsonData.id, transactions: jsonData.data };
-                }
-            } catch (error) {
-                Alert.alert('Error', 'No se pudo conectar con el servidor');
-                console.error(error);
-            }
-        };
-
-        const fetchUsersNames = async (ids) => {
-            try {
-                const token = await AsyncStorage.getItem('token');
-
-                if (!token) {
-                    Alert.alert('Error', 'No se encontró el token de autenticación');
-                    return;
-                }
-
-                const queryString = ids.map(id => `id=${id}`).join('&');
-
-                const response = await fetch(`http://${ipComputadora}:3000/users/names?${queryString}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                if (response.status === 200) {
-                    const jsonData = await response.json();
-                    return jsonData.data;
-
-                }
-            } catch (error) {
-                Alert.alert('Error', 'No se pudo conectar con el servidor');
-                console.error(error);
-            }
-        };
-
-        const fetchInOrder = async () => {
-            try {
-                const { ids, userID, transactions } = await fetchUserTransactions();
-                const usersNames = await fetchUsersNames(ids);
-
-                console.log('Id del usuario: ', userID)
-
-                const tempDataToList = [...dataToList];
-
-                for (const transaction of transactions) {
-                    console.log(transaction)
-                    let tempID;
-                    let tempUser;
-                    let tempType;
-
-                    if (transaction.user_orig_id !== userID) {
-                        tempID = transaction.user_orig_id;
-                        tempUser = usersNames.find(user => user.id == tempID);
-                        tempType = 'income';
-                    } else {
-                        tempID = transaction.user_dest_id;
-                        tempUser = usersNames.find(user => user.id == tempID);
-                        tempType = 'payment';
-                    }
-                    tempDataToList.push({
-                        id: tempID,
-                        name: `${tempUser.name} ${tempUser.surname}`,
-                        amount: transaction.amount,
-                        date: transaction.date.slice(0, 10),
-                        status: 'default',
-                        type: tempType,
-                    });
-                }
-
-                setDataToList(tempDataToList)
-
-            } catch (error) {
-                console.error('Error en alguna de las peticiones:', error);
-            }
-
-        }
-        fetchInOrder();
-
-    }, []);
     return (
         dataToList.length === null ? (
             <View style={styles.loadingScreen}>
@@ -180,7 +62,7 @@ export default function HistoryScreen({ navigation }) {
                     <TouchableOpacity
                         style={styles.btnClose}
                         onPress={() => {
-                            setDataToList([])
+                            fetchInOrder();
                             navigation.replace("HomeScreen")
                         }}
                     >

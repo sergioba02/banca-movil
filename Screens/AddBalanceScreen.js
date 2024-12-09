@@ -18,7 +18,7 @@ export default function HomeScreen({ navigation }) {
 
     const { userData, fetchUserData } = useUserData();
     const [amount, setAmount] = useState();
-    const newAmount = parseInt(amount) + parseInt(userData.balance);
+    const newAmount = (parseFloat(amount) + parseFloat(userData.balance)).toFixed(2);
 
     const ipComputadora = "192.168.1.67";
 
@@ -42,11 +42,12 @@ export default function HomeScreen({ navigation }) {
                     'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    amount: parseInt(newAmount),
+                    amount: parseFloat(newAmount),
                 }),
             });
 
             if (response.status === 200) {
+                console.log('amount: ', newAmount, 'balance: ',userData.balance)
                 setAmount('');
                 fetchUserData();
                 Alert.alert('Depósito exitoso', 'Disfrute de su nuevo saldo', [
@@ -81,7 +82,6 @@ export default function HomeScreen({ navigation }) {
                     <TouchableOpacity
                         style={styles.btnAdd}
                         onPress={() => {
-                            console.log('amount:', newAmount)
                             handleAddBalance()
                         }}
                     >

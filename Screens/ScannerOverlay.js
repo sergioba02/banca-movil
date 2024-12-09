@@ -1,11 +1,21 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 const ScannerOverlay = () => {
+
+  const navigation = useNavigation();
   return (
     <View style={styles.overlay}>
       {/* Texto de instrucciones arriba */}
-      <Text style={styles.text}>Enfoca en el QR</Text>
+      <Text style={styles.textFocus}>Enfoca en el QR</Text>
+
+      <TouchableOpacity 
+      style={styles.btnCancel}
+      onPress={()=>{navigation.replace("HomeScreen")}}
+      >
+        <Text style={styles.textCancel}>Cancelar</Text>
+      </TouchableOpacity>
 
       {/* Marco transparente */}
       <View style={styles.centerFrame} />
@@ -29,10 +39,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  text: {
+  btnCancel: {
+    alignItems: 'center',
+    zIndex: 3,
+  },
+  textFocus: {
     position: 'absolute',
     top: 100, // Distancia desde la parte superior de la pantalla
     color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    zIndex: 3, // Asegura que el texto esté por encima de los demás componentes
+  },
+  textCancel: {
+    position: 'absolute',
+    top: 455, // Distancia desde la parte superior de la pantalla
+    color: 'darkred',
     fontSize: 18,
     fontWeight: 'bold',
     zIndex: 3, // Asegura que el texto esté por encima de los demás componentes

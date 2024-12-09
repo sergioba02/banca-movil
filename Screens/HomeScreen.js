@@ -17,21 +17,21 @@ import { useCameraPermissions } from "expo-camera";
 
 export default function HomeScreen({ navigation }) {
 
-  const { userData, dataToList } = useUserData();
+  const { userData, dataToList, historyFetchInOrder } = useUserData();
 
   const ipComputadora = "192.168.1.67";
 
   const [permission, requestPermission] = useCameraPermissions();
   const isPermissionGranted = Boolean(permission?.granted);
 
-  const handleRequestPermission = async () => {
-    const permissionResponse = await requestPermission();
-    if (permissionResponse.granted) {
-      Alert.alert("Permission granted", "You can now use the camera.");
-    } else {
-      Alert.alert("Permission denied", "Camera permission is required.");
-    }
-  };
+  // const handleRequestPermission = async () => {
+  //   const permissionResponse = await requestPermission();
+  //   if (permissionResponse.granted) {
+  //     Alert.alert("Permission granted", "You can now use the camera.");
+  //   } else {
+  //     Alert.alert("Permission denied", "Camera permission is required.");
+  //   }
+  // };
 
   const handleLogout = async () => {
     try {
@@ -54,11 +54,11 @@ export default function HomeScreen({ navigation }) {
 
   const handleCameraAccess = async () => {
     if (isPermissionGranted) {
-      navigation.navigate("Permission");
+      navigation.replace("Permission");
     } else {
       const permissionResponse = await requestPermission();
       if (permissionResponse.granted) {
-        navigation.navigate("Permission");
+        navigation.replace("Permission");
       } else {
         Alert.alert("Permiso denegado", "Se requiere permiso a la cámara para continuar.");
       }
@@ -78,7 +78,7 @@ export default function HomeScreen({ navigation }) {
 
       < ImageBackground source={require('../assets/backgroundv2.png')} style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.greeting}>Bienvenido, {userData.name}</Text>
+          <Text style={styles.greeting}>Hola, {userData.name}</Text>
           <TouchableOpacity
             onPress={handleLogout}
           >
@@ -122,12 +122,15 @@ export default function HomeScreen({ navigation }) {
                 </View>
               </TouchableOpacity>
             )}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(index) => index.toString()}
             ListEmptyComponent={<Text>No hay datos para mostrar</Text>}
           />
           <TouchableOpacity
             style={styles.historySeeMore}
-            onPress={() => navigation.navigate("HistoryScreen")}
+            onPress={() => {
+              historyFetchInOrder();
+              navigation.navigate("HistoryScreen")
+            }}
           >
             <Text style={styles.historySeeMoreLabel}>Ver más</Text>
           </TouchableOpacity>
