@@ -124,7 +124,7 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.bottomContainer}>
             <TouchableOpacity
               style={styles.btnLogin}
-              onPress={() => navigation.navigate("LoginScreen")}
+              onPress={() => navigation.replace("LoginScreen")}
             >
               <Text style={styles.textLogin}>¿Ya tienes cuenta?</Text>
               <Text style={styles.textLogin}>Inicia sesión aquí</Text>

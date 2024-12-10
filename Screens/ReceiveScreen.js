@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { StyleSheet, View, TouchableOpacity, Text, KeyboardAvoidingView, TextInput, Keyboard, TouchableWithoutFeedback, Platform } from "react-native"
 
 export default function HomeScreen({ navigation }) {

@@ -9,17 +9,18 @@ import {
     Platform
 } from "react-native"
 import { useUserData } from "../context/userDataProvider";
+import { useState } from "react";
 
-export default function HistoryScreen({ navigation }) {
+export default function GenCodesScreen ({ navigation }) {
 
-    const { dataToList, fetchInOrder } = useUserData();
+    const { codesToList, fetchInOrder, fetchCodes } = useUserData();
 
     const refreshData = () => {
         fetchInOrder();
       }
 
     return (
-        !dataToList ? (
+        !codesToList ? (
             <View style={styles.loadingScreen}>
                 <View style={styles.logoContainer}>
                     <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
@@ -30,33 +31,30 @@ export default function HistoryScreen({ navigation }) {
         ) : (
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Text style={styles.label}>Historial de movimientos</Text>
+                    <Text style={styles.label}>Códigos generados disponibles para escanear</Text>
                 </View>
                 {/*Historial */}
                 <View style={styles.historyContainer}>
-                    {console.log('Contenido de dataToList:', dataToList)}
+                    {console.log('Contenido de codesToList:', codesToList)}
                     <FlatList
-                        data={dataToList}
+                        data={codesToList}
                         renderItem={({ item }) => (
-                            <TouchableOpacity style={styles.historyItem}>
-                                <View style={styles.historyItemTop}>
-                                    <Text style={styles.historyItemName}>{item.name}</Text>
+                            <TouchableOpacity 
+                            style={styles.historyItem}
+                            onPress={()=>{
+                                fetchCodes(item);
+                                navigation.replace("QrCodeScreen")
+                            }}
+                            >
+                                <View style={styles.historyItemLeft}>
+                                    <Text style={styles.historyItemConcept}>Concepto: {item.concept}</Text>
                                     <Text style={styles.historyItemDate}>{item.date}</Text>
                                 </View>
-                                <View style={styles.historyItemMoney}>
-                                    <Text
-                                        style={[
-                                            styles.historyItemAmount,
-                                            { color: item.type === 'income' ? 'green' : 'red' }
-                                        ]}
-                                    >
-                                        {item.type === 'income' ? '+' : '-'}${item.amount}
-                                    </Text>
-                                    <Text style={styles.historyItemStatus}>{item.status}</Text>
+                                <View style={styles.historyItemRight}>
+                                    <Text style={styles.historyItemAmount}>${item.amount}</Text>
                                 </View>
                             </TouchableOpacity>
                         )}
-                        keyExtractor={(item) => item.id.toString()}
                         ListEmptyComponent={<Text>No hay datos para mostrar</Text>}
                     />
                 </View>
@@ -85,7 +83,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#218DD4'
     },
     header: {
-        width: 364
+        width: 364,
+        height: 'auto'
     },
     label: {
         fontFamily: "inter",
@@ -123,35 +122,29 @@ const styles = StyleSheet.create({
         marginTop: 16,
 
     },
-    historyItemTop: {
+    historyItemLeft: {
         justifyContent: 'center',
         flexDirection: 'column',
     },
-    historyItemName: {
+    historyItemConcept: {
         fontFamily: "inter",
         fontSize: 18,
     },
-    historyItemMoney: {
+    historyItemRight: {
         alignItems: 'flex-end',
         flexDirection: 'column',
         justifyContent: 'center',
 
     },
-    historyItemAmount: {
-        fontFamily: "inter",
-        fontSize: 18,
-        color: '#000',
-    },
     historyItemDate: {
         fontFamily: "inter",
-        fontSize: 12,
+        fontSize: 16,
         color: '#000',
-        opacity: 0.6,
     },
-    historyItemStatus: {
+    historyItemAmount: {
         fontFamily: "inter",
-        fontSize: 12,
-        color: '#008113',
+        fontSize: 20,
+        color: '#000',
 
     },
     btnClose: {

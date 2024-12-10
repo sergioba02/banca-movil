@@ -69,7 +69,7 @@ export default function LoginScreen({ navigation }) {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-      keyboardVerticalOffset={-220}
+      keyboardVerticalOffset={-300}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
@@ -114,7 +114,7 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.bottomContainer}>
             <TouchableOpacity
               style={styles.btnSignin}
-              onPress={() => navigation.navigate("SigninScreen")}
+              onPress={() => navigation.replace("RegisterScreen")}
             >
               <Text style={styles.textSignin}>¿No tienes cuenta?</Text>
               <Text style={styles.textSignin}>Regístrate aquí</Text>

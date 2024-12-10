@@ -14,6 +14,10 @@ export default function CameraComponent({ navigation }) {
 
   const ipComputadora = "192.168.1.67";
 
+  const refreshData = () => {
+    fetchInOrder();
+  }
+
   const handleTransaction = async (qrData) => {
     qrLock.current = true;
     setScanned(true);
@@ -41,7 +45,7 @@ export default function CameraComponent({ navigation }) {
       });
 
       if (response.status === 200) {
-        fetchInOrder();
+        refreshData();
         Alert.alert('Aviso', 'Transacción exitosa', [
           {
             text: 'Aceptar',

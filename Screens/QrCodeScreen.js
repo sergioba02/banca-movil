@@ -18,55 +18,14 @@ export default function HomeScreen({ navigation }) {
 
   const ipComputadora = "192.168.1.67";
 
-  const { userData, fetchUserData } = useUserData();
+  const { userData, fetchUserData, codeData } = useUserData();
 
-  const [amount, setAmount] = useState('');
-  const [concept, setConcept] = useState('');
   const [qrValue, setQrValue] = useState('');
-  const [code, setCode] = useState('');
-  const [lastCode, setLastCode] = useState('');
+  const [code, setCode] = useState('')
 
-  const newCode = `${concept}${amount}`;
-
-  const handleSaveCode = async (data) => {
-
-    const token = await AsyncStorage.getItem('token');
-
-    if (!token) {
-      Alert.alert('Error', 'No se encontró el token de autenticación');
-      return;
-    }else if(lastCode === newCode){
-      Alert.alert('Aviso', "El código ya ha sido generado", [
-        { text: 'Aceptar' },
-      ]);
-      return;
-    }
-
-    try {
-      setCode(newCode)
-      console.log('codigo que se asignará: ', newCode)
-      const response = await fetch(`http://${ipComputadora}:3000/saveCode`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          code: newCode,
-          data: data,
-          status: 'active',
-        }),
-      });
-
-      if (response.status === 200) {
-        setLastCode(newCode)
-        console.log('Codigo guardado correctamente')
-      }
-    } catch (error) {
-      Alert.alert('Error', 'No se pudo conectar con el servidor');
-      console.error(error);
-    }
-  }
+//   if(codeData){
+//     setQrValue(codeData);
+//   }
 
   const handleDeleteCode = async () => {
 
@@ -101,36 +60,6 @@ export default function HomeScreen({ navigation }) {
     }
   }
 
-  const handleTransfer = () => {
-    if (parseFloat(amount) > parseFloat(userData.balance)) {
-      setAmount('');
-      setConcept('');
-      Alert.alert('Saldo insuficiente', 'El monto es superior a su saldo actual', [
-        { text: 'Aceptar' },
-      ]);
-      return;
-    }
-    const jsonString = JSON.stringify({ 'orig_id': userData.id, 'amount': amount, 'concept': concept })
-    console.log('Generar QR: ', jsonString);
-    if (!amount && !concept) {
-      Alert.alert('Error', "El campo 'Cantidad a transferir' está vacío", [
-        { text: 'Aceptar' },
-      ]);
-    } else if (!amount) {
-      Alert.alert('Error', "El campo 'Cantidad a transferir' está vacío", [
-        { text: 'Aceptar' },
-      ]);
-    } else if (!concept) {
-      Alert.alert('Error', "El campo 'Cantidad a transferir' está vacío", [
-        { text: 'Aceptar' },
-      ]);
-    } else {
-      setQrValue(jsonString);
-      handleSaveCode(jsonString);
-
-    }
-  }
-
   return (
     <TouchableWithoutFeedback
       onPress={Keyboard.dismiss}>
@@ -139,38 +68,16 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.inputLabel}>Cantidad a Transferir</Text>
         </View>
         <View style={styles.textInputContainer}>
-          <TextInput
-            style={styles.input}
-            value={amount}
-            placeholder={'$0.00'}
-            placeholderTextColor='#747474'
-            keyboardType="decimal-pad"
-            onChangeText={setAmount}
-          />
+            <Text>{codeData.amount}</Text>
+
         </View>
         <View style={styles.inputLabelContainer}>
           <Text style={styles.inputLabel}>Concepto de transferencia</Text>
         </View>
         <View style={styles.textInputContainer}>
-          <TextInput
-            style={styles.input}
-            value={concept}
-            placeholder={'Concepto'}
-            placeholderTextColor='#747474'
-            onChangeText={setConcept}
-            maxLength={25}
-          />
+            <Text>{codeData.concept}</Text>
         </View>
         <View style={styles.btnsContainer}>
-          <TouchableOpacity
-            style={styles.btnTransfer}
-            onPress={() => {
-              Keyboard.dismiss();
-              handleTransfer();
-            }}
-          >
-            <Text style={styles.textTransfer}>Generar QR</Text>
-          </TouchableOpacity>
 
           <View style={styles.qrContainer}>
             {qrValue && (

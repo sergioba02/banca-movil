@@ -17,21 +17,21 @@ import { useCameraPermissions } from "expo-camera";
 
 export default function HomeScreen({ navigation }) {
 
-  const { userData, dataToList, historyFetchInOrder } = useUserData();
-
-  const ipComputadora = "192.168.1.67";
+  const { userData, dataToList, fetchInOrder, fetchCodes } = useUserData();
 
   const [permission, requestPermission] = useCameraPermissions();
   const isPermissionGranted = Boolean(permission?.granted);
 
-  // const handleRequestPermission = async () => {
-  //   const permissionResponse = await requestPermission();
-  //   if (permissionResponse.granted) {
-  //     Alert.alert("Permission granted", "You can now use the camera.");
-  //   } else {
-  //     Alert.alert("Permission denied", "Camera permission is required.");
-  //   }
-  // };
+  const ipComputadora = "192.168.1.67";
+  const maxItems = 4;
+
+
+  const limitedData = Array.isArray(dataToList) ? dataToList.slice(0, maxItems) : [];
+  
+
+  const refreshData = () => {
+    fetchInOrder();
+  }
 
   const handleLogout = async () => {
     try {
@@ -66,7 +66,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    dataToList.length === null ? (
+    !dataToList ? (
       <View style={styles.loadingScreen}>
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('../assets/LogoPuerkito.png')} />
@@ -102,7 +102,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.historyContainer}>
           {console.log('Contenido de dataToList:', dataToList)}
           <FlatList
-            data={dataToList}
+            data={limitedData}
             renderItem={({ item }) => (
               <TouchableOpacity style={styles.historyItem}>
                 <View style={styles.historyItemTop}>
@@ -128,8 +128,8 @@ export default function HomeScreen({ navigation }) {
           <TouchableOpacity
             style={styles.historySeeMore}
             onPress={() => {
-              historyFetchInOrder();
-              navigation.navigate("HistoryScreen")
+              refreshData();
+              navigation.replace("HistoryScreen")
             }}
           >
             <Text style={styles.historySeeMoreLabel}>Ver más</Text>
@@ -150,6 +150,16 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.btnText}>Transferir</Text>
           </TouchableOpacity>
         </View>
+        <View style={styles.generatedCodesContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                fetchCodes();
+                navigation.replace("GenCodesScreen")
+              }}
+            >
+              <Text style={styles.generatedCodesText}>Códigos generados sin escanear</Text>
+            </TouchableOpacity>
+          </View>
 
       </ImageBackground >
 
@@ -363,6 +373,29 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     marginTop: 50
 
+  },
+  generatedCodesContainer: {
+    position: 'absolute',
+    top: Platform.select({
+      android: 0,
+      ios: 700,
+    }),
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 362,
+    height: 49,
+    backgroundColor: '#F1F1F1',
+    borderRadius: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    paddingHorizontal: 20,
+  },
+  generatedCodesText: {
+    fontFamily: "inter",
+    fontSize: 16,
+    color: '#1576B7',
+    fontWeight: "bold",
   },
 
 
