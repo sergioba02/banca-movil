@@ -12,7 +12,7 @@ export default function CameraComponent({ navigation }) {
   const cameraRef = useRef(null);
   const qrLock = useRef(false);
 
-  const ipComputadora = "192.168.1.67";
+  const ipComputadora = "192.168.1.70";
 
   const refreshData = () => {
     fetchInOrder();

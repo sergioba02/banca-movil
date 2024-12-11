@@ -1,13 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
 const ScannerOverlay = () => {
 
   const navigation = useNavigation();
   return (
     <View style={styles.overlay}>
-      {/* Texto de instrucciones arriba */}
       <Text style={styles.textFocus}>Enfoca en el QR</Text>
 
       <TouchableOpacity 
@@ -17,14 +16,10 @@ const ScannerOverlay = () => {
         <Text style={styles.textCancel}>Cancelar</Text>
       </TouchableOpacity>
 
-      {/* Marco transparente */}
-      <View style={styles.centerFrame} />
+      <View style={styles.centerFrame} >
+        <View style={styles.innerFrame} />
 
-      {/* Cubre las áreas superior, izquierda, derecha y inferior */}
-      <View style={[styles.cover, styles.topCover]} />
-      <View style={[styles.cover, styles.leftCover]} />
-      <View style={[styles.cover, styles.rightCover]} />
-      <View style={[styles.cover, styles.bottomCover]} />
+      </View>
     </View>
   );
 };
@@ -35,65 +30,45 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
   btnCancel: {
     alignItems: 'center',
     zIndex: 3,
+    top: 770,
   },
   textFocus: {
     position: 'absolute',
-    top: 100, // Distancia desde la parte superior de la pantalla
+    top: 100,
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-    zIndex: 3, // Asegura que el texto esté por encima de los demás componentes
+    zIndex: 3,
   },
   textCancel: {
-    position: 'absolute',
-    top: 455, // Distancia desde la parte superior de la pantalla
     color: 'darkred',
     fontSize: 18,
     fontWeight: 'bold',
-    zIndex: 3, // Asegura que el texto esté por encima de los demás componentes
+    zIndex: 3,
   },
   centerFrame: {
-    width: 250, // Ancho del marco
-    height: 250, // Alto del marco
+    width: 900,
+    height: 900,
+    borderColor: 'rgba(0, 0, 0, 0.7)',
+    borderWidth: 300,
+    borderRadius: 325,
+    zIndex: 2,
+  },
+  innerFrame: {
+    width: 300, 
+    height: 300,
+    backgroundColor: 'transparent',
+    borderRadius: 25,
     borderColor: '#fff',
-    borderWidth: 2,
-    borderRadius: 20,
-    zIndex: 2, // Asegura que el marco esté por encima de los overlays
-  },
-  cover: {
-    position: 'absolute',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Oscurece las áreas externas
-  },
-  topCover: {
-    top: 0,
-    left: 0,
-    right: 0,
-    height: '35%', // Área superior
-  },
-  bottomCover: {
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '35%', // Área inferior
-  },
-  leftCover: {
-    top: '35%',
-    bottom: '35%',
-    left: 0,
-    width: '15%', // Área izquierda
-  },
-  rightCover: {
-    top: '35%',
-    bottom: '35%',
-    right: 0,
-    width: '15%', // Área derecha
+    borderWidth: 4,
+    zIndex: 1,
   },
 });
 

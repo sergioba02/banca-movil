@@ -20,7 +20,7 @@ export default function HomeScreen({ navigation }) {
     const [amount, setAmount] = useState();
     const newAmount = (parseFloat(amount) + parseFloat(userData.balance)).toFixed(2);
 
-    const ipComputadora = "192.168.1.67";
+    const ipComputadora = "192.168.1.70";
 
     const handleAddBalance = async () => {
         try {
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     },
     inputt: {
         marginBottom: Platform.select({
-            android: 0,
+            android: 25,
             ios: 25,
 
         }),
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
         width: 362,
         height: 40,
         borderRadius: 100,
-        marginBottom: 520,
+        marginBottom: 450,
 
     },
     textAdd: {

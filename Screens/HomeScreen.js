@@ -22,7 +22,7 @@ export default function HomeScreen({ navigation }) {
   const [permission, requestPermission] = useCameraPermissions();
   const isPermissionGranted = Boolean(permission?.granted);
 
-  const ipComputadora = "192.168.1.67";
+  const ipComputadora = "192.168.1.70";
   const maxItems = 4;
 
 
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
   generatedCodesContainer: {
     position: 'absolute',
     top: Platform.select({
-      android: 0,
+      android: 700,
       ios: 700,
     }),
     alignItems: 'center',

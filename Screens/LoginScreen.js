@@ -20,7 +20,7 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const ipComputadora = "192.168.1.67";
+  const ipComputadora = "192.168.1.70";
 
   const handleLogin = async () => {
     try {

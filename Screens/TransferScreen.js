@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen({ navigation }) {
 
-  const ipComputadora = "192.168.1.67";
+  const ipComputadora = "192.168.1.70";
 
   const { userData, fetchUserData } = useUserData();
 

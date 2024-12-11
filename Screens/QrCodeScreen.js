@@ -16,7 +16,7 @@ export default function QrCodeScreen({ navigation, route }) {
 
   const { code, orig_id, amount, concept } = route.params;
 
-  const ipComputadora = "192.168.1.67";
+  const ipComputadora = "192.168.1.70";
 
   const handleDeleteCode = async () => {
 

@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
     const [dataToList, setDataToList] = useState([]);
     const [codesToList, setCodesToList] = useState([]);
 
-    const ipComputadora = "192.168.1.67";
+    const ipComputadora = "192.168.1.70";
 
     const fetchUserData = async () => {
         try {
