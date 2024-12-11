@@ -13,7 +13,7 @@ import { useState } from "react";
 
 export default function GenCodesScreen ({ navigation }) {
 
-    const { codesToList, fetchInOrder, fetchCodes } = useUserData();
+    const { userData, codesToList, fetchInOrder, fetchCodes, handleRebuildCode } = useUserData();
 
     const refreshData = () => {
         fetchInOrder();
@@ -42,8 +42,7 @@ export default function GenCodesScreen ({ navigation }) {
                             <TouchableOpacity 
                             style={styles.historyItem}
                             onPress={()=>{
-                                fetchCodes(item);
-                                navigation.replace("QrCodeScreen")
+                                navigation.navigate("QrCodeScreen", { code: item.code, orig_id: userData.id, amount: item.amount, concept: item.concept })
                             }}
                             >
                                 <View style={styles.historyItemLeft}>
@@ -64,7 +63,7 @@ export default function GenCodesScreen ({ navigation }) {
                         style={styles.btnClose}
                         onPress={() => {
                             refreshData();
-                            navigation.replace("HomeScreen")
+                            navigation.pop()
                         }}
                     >
                         <Text style={styles.textClose}>Cerrar</Text>

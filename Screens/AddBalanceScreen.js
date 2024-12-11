@@ -91,7 +91,7 @@ export default function HomeScreen({ navigation }) {
                 <View>
                     <TouchableOpacity
                         style={styles.btnClose}
-                        onPress={() => navigation.replace("HomeScreen")}
+                        onPress={() => navigation.pop()}
                     >
                         <Text style={styles.textClose}>Cerrar</Text>
                     </TouchableOpacity>

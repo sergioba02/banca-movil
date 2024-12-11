@@ -12,7 +12,7 @@ const ScannerOverlay = () => {
 
       <TouchableOpacity 
       style={styles.btnCancel}
-      onPress={()=>{navigation.replace("HomeScreen")}}
+      onPress={()=>{navigation.pop()}}
       >
         <Text style={styles.textCancel}>Cancelar</Text>
       </TouchableOpacity>

@@ -38,7 +38,7 @@ export default function HistoryScreen({ navigation }) {
                     <FlatList
                         data={dataToList}
                         renderItem={({ item }) => (
-                            <TouchableOpacity style={styles.historyItem}>
+                            <View style={styles.historyItem}>
                                 <View style={styles.historyItemTop}>
                                     <Text style={styles.historyItemName}>{item.name}</Text>
                                     <Text style={styles.historyItemDate}>{item.date}</Text>
@@ -54,7 +54,7 @@ export default function HistoryScreen({ navigation }) {
                                     </Text>
                                     <Text style={styles.historyItemStatus}>{item.status}</Text>
                                 </View>
-                            </TouchableOpacity>
+                            </View>
                         )}
                         keyExtractor={(item) => item.id.toString()}
                         ListEmptyComponent={<Text>No hay datos para mostrar</Text>}
@@ -66,7 +66,7 @@ export default function HistoryScreen({ navigation }) {
                         style={styles.btnClose}
                         onPress={() => {
                             refreshData();
-                            navigation.replace("HomeScreen")
+                            navigation.pop()
                         }}
                     >
                         <Text style={styles.textClose}>Cerrar</Text>

@@ -54,11 +54,11 @@ export default function HomeScreen({ navigation }) {
 
   const handleCameraAccess = async () => {
     if (isPermissionGranted) {
-      navigation.replace("Permission");
+      navigation.navigate("Permission");
     } else {
       const permissionResponse = await requestPermission();
       if (permissionResponse.granted) {
-        navigation.replace("Permission");
+        navigation.navigate("Permission");
       } else {
         Alert.alert("Permiso denegado", "Se requiere permiso a la cámara para continuar.");
       }
@@ -104,7 +104,7 @@ export default function HomeScreen({ navigation }) {
           <FlatList
             data={limitedData}
             renderItem={({ item }) => (
-              <TouchableOpacity style={styles.historyItem}>
+              <View style={styles.historyItem}>
                 <View style={styles.historyItemTop}>
                   <Text style={styles.historyItemName}>{item.name}</Text>
                   <Text style={styles.historyItemDate}>{item.date}</Text>
@@ -120,7 +120,7 @@ export default function HomeScreen({ navigation }) {
                   </Text>
                   <Text style={styles.historyItemStatus}>{item.status}</Text>
                 </View>
-              </TouchableOpacity>
+              </View>
             )}
             keyExtractor={(index) => index.toString()}
             ListEmptyComponent={<Text>No hay datos para mostrar</Text>}
@@ -129,7 +129,7 @@ export default function HomeScreen({ navigation }) {
             style={styles.historySeeMore}
             onPress={() => {
               refreshData();
-              navigation.replace("HistoryScreen")
+              navigation.navigate("HistoryScreen")
             }}
           >
             <Text style={styles.historySeeMoreLabel}>Ver más</Text>
@@ -145,7 +145,7 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnTransfer}
-            onPress={() => navigation.replace("TransferScreen")}
+            onPress={() => navigation.navigate("TransferScreen")}
           >
             <Text style={styles.btnText}>Transferir</Text>
           </TouchableOpacity>
@@ -154,7 +154,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity
               onPress={() => {
                 fetchCodes();
-                navigation.replace("GenCodesScreen")
+                navigation.navigate("GenCodesScreen")
               }}
             >
               <Text style={styles.generatedCodesText}>Códigos generados sin escanear</Text>

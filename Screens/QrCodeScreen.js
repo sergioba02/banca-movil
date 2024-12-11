@@ -1,31 +1,22 @@
-import { useState } from "react"
 import {
   StyleSheet,
   View,
   TouchableOpacity,
   Text,
-  TextInput,
-  Keyboard,
-  TouchableWithoutFeedback,
   Platform,
   Alert
 } from "react-native"
 import QRCode from 'react-native-qrcode-svg';
-import { useUserData } from "../context/userDataProvider";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUserData } from "../context/userDataProvider";
 
-export default function HomeScreen({ navigation }) {
+export default function QrCodeScreen({ navigation, route }) {
+
+  const { fetchCodes } = useUserData();
+
+  const { code, orig_id, amount, concept } = route.params;
 
   const ipComputadora = "192.168.1.67";
-
-  const { userData, fetchUserData, codeData } = useUserData();
-
-  const [qrValue, setQrValue] = useState('');
-  const [code, setCode] = useState('')
-
-//   if(codeData){
-//     setQrValue(codeData);
-//   }
 
   const handleDeleteCode = async () => {
 
@@ -47,11 +38,11 @@ export default function HomeScreen({ navigation }) {
       });
 
       if (response.status === 200) {
-        console.log('Codigo eliminado correctamente')
+        fetchCodes();
         Alert.alert('Aviso', "El código QR se eliminó correctamente", [
-          { text: 'Aceptar' },
+          { text: 'Aceptar', onPress: () => { navigation.replace("GenCodesScreen"); } },
         ]);
-      }else if (response.status === 404){
+      } else if (response.status === 404) {
         console.log('Codigo QR no encontrado')
       }
     } catch (error) {
@@ -61,64 +52,44 @@ export default function HomeScreen({ navigation }) {
   }
 
   return (
-    <TouchableWithoutFeedback
-      onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <View style={styles.inputLabelContainer}>
-          <Text style={styles.inputLabel}>Cantidad a Transferir</Text>
-        </View>
-        <View style={styles.textInputContainer}>
-            <Text>{codeData.amount}</Text>
-
-        </View>
-        <View style={styles.inputLabelContainer}>
-          <Text style={styles.inputLabel}>Concepto de transferencia</Text>
-        </View>
-        <View style={styles.textInputContainer}>
-            <Text>{codeData.concept}</Text>
-        </View>
-        <View style={styles.btnsContainer}>
-
-          <View style={styles.qrContainer}>
-            {qrValue && (
-              <QRCode
-                value={qrValue}
-                size={200}
-                color="black"
-                backgroundColor="white"
-              />
-            )}
-          </View>
-          {qrValue && (
-            <TouchableOpacity
-              style={styles.btnDelete}
-              onPress={() => {
-                setQrValue(null);
-                setAmount('');
-                setConcept('');
-                handleDeleteCode();
-              }}
-            >
-              <Text style={styles.textDelete}>Eliminar QR</Text>
-            </TouchableOpacity>
-          )}
-
-          <TouchableOpacity
-            style={styles.btnClose}
-            onPress={() => {
-              setQrValue(null);
-                setAmount('');
-                setConcept('');
-                fetchUserData();
-                navigation.replace("HomeScreen")
-            }}
-          >
-            <Text style={styles.textClose}>Cerrar</Text>
-          </TouchableOpacity>
-        </View>
-
+    <View style={styles.container}>
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>Cantidad a Transferir:</Text>
       </View>
-    </TouchableWithoutFeedback>
+      <View style={styles.dataLabel}>
+        <Text style={styles.dataLabel}>${amount}</Text>
+      </View>
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>Concepto de transferencia:</Text>
+      </View>
+      <View style={styles.dataLabel}>
+        <Text style={styles.dataLabel}>{concept}</Text>
+      </View>
+      <View style={styles.qrContainer}>
+        <QRCode
+          value={JSON.stringify({ 'orig_id': orig_id, 'amount': amount, 'concept': concept })}
+          size={200}
+          color="black"
+          backgroundColor="white"
+        />
+      </View>
+      <TouchableOpacity
+        style={styles.btnDelete}
+        onPress={() => {
+          handleDeleteCode();
+        }}
+      >
+        <Text style={styles.textDelete}>Eliminar QR</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.btnClose}
+        onPress={() => {
+          navigation.pop()
+        }}
+      >
+        <Text style={styles.textClose}>Cerrar</Text>
+      </TouchableOpacity>
+    </View>
   );
 
 }
@@ -131,21 +102,10 @@ const styles = StyleSheet.create({
     paddingTop: 100,
 
   },
-  inputContainer: {
-    marginTop: Platform.select({
-      android: 77,
-      ios: 80,
-    }),
-    marginBottom: Platform.select({
-      android: 150,
-      ios: 145,
-    }),
-    alignItems: 'center'
-  },
-  inputLabelContainer: {
+  labelContainer: {
     width: Platform.select({
       android: '',
-      ios: 'auto',
+      ios: 364,
     }),
     height: Platform.select({
       android: '',
@@ -156,9 +116,9 @@ const styles = StyleSheet.create({
       ios: 0,
     }),
     marginLeft: 26,
-    alignSelf: 'flex-start',
+
   },
-  inputLabel: {
+  label: {
     fontSize: 20,
     color: '#000',
     fontFamily: "inter",
@@ -166,53 +126,18 @@ const styles = StyleSheet.create({
 
   },
 
-  textInputContainer: {
+  dataLabel: {
+    fontSize: 20,
+    color: '#000',
+    fontFamily: "inter",
+
     marginBottom: Platform.select({
       android: 10,
-      ios: 53,
+      ios: 10,
 
     }),
-  },
-  input: {
-    height: 40,
-    width: 362,
-    marginBottom: 10,
-    padding: 10,
-    borderRadius: 14,
-    fontSize: 18,
-    fontFamily: "inter",
-    fontStyle: "italic",
-    fontWeight: "medium",
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    borderColor: '#D1D1D1',
-    borderWidth: 1,
-  },
-  btnTransfer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: Platform.select({
-      android: 362,
-      ios: 362,
-    }),
-    height: 40,
-    borderRadius: 28,
-    backgroundColor: '#5DADE2',
-    marginTop: Platform.select({
-      android: 30,
-      ios: -20,
-    }),
-    marginBottom: Platform.select({
-      android: 30,
-      ios: 60,
-    }),
-  },
-  textTransfer: {
-    fontSize: 20,
-    color: '#FFFFFF',
-    fontFamily: "inter",
-    fontWeight: "bold"
+    alignSelf: 'flex-start',
+    marginLeft: 26,
   },
   btnDelete: {
     alignItems: 'center',
@@ -237,7 +162,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#FFFFFF',
     fontFamily: "inter",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   btnClose: {
     position: 'absolute',
@@ -252,26 +177,24 @@ const styles = StyleSheet.create({
     }),
     height: 40,
     borderRadius: 100,
-    top: 420
-
+    top: '100%',
   },
   textClose: {
     fontSize: 20,
     color: '#5DADE2',
     fontFamily: "inter",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   qrContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: Platform.select({
+    marginTop: Platform.select({
       android: 135,
       ios: 100,
     }),
-  },
-  btnsContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center'
+    marginBottom: Platform.select({
+      android: 135,
+      ios: 180,
+    }),
   },
 })

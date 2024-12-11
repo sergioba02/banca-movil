@@ -203,7 +203,7 @@ export default function HomeScreen({ navigation }) {
                 setAmount('');
                 setConcept('');
                 fetchUserData();
-                navigation.replace("HomeScreen")
+                navigation.pop()
             }}
           >
             <Text style={styles.textClose}>Cerrar</Text>

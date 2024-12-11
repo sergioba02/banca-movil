@@ -10,7 +10,6 @@ export const UserProvider = ({ children }) => {
     const [userData, setUserData] = useState([]);
     const [dataToList, setDataToList] = useState([]);
     const [codesToList, setCodesToList] = useState([]);
-    const [codeData, setCodeData] = useState([]);
 
     const ipComputadora = "192.168.1.67";
 
@@ -110,12 +109,13 @@ export const UserProvider = ({ children }) => {
         }
     };
 
-    const fetchCodes = async (codeData) => {
+    const fetchCodes = async () => {
 
         const tempCodeList = [];
-        const tempCodeData = [];
 
         try {
+            setCodesToList([]);
+            
             const token = await AsyncStorage.getItem('token');
 
             if (!token) {
@@ -138,22 +138,14 @@ export const UserProvider = ({ children }) => {
                 jsonData.data.forEach(item => {
                     tempCodeList.push({
                         id: item.id,
+                        code: item.code,
                         amount: JSON.parse(item.data).amount,
                         concept: JSON.parse(item.data).concept,
                         date: item.date.slice(0,10),
                         
                     })
-
-                    if(codeData){
-                        if(codeData.id === item.id){
-                            tempCodeData.push(JSON.parse(item.data))
-                        }
-                    }
-
-                    tempCodeData.push(JSON.parse(item.data))
                 })
                 setCodesToList(tempCodeList);
-                setCodeData(tempCodeData)
                 return;
 
             }
@@ -208,7 +200,15 @@ export const UserProvider = ({ children }) => {
     };
 
     return (
-        <UserContext.Provider value={{ userData, dataToList, setDataToList, fetchUserData, fetchInOrder, fetchCodes, codesToList, codeData }}>
+        <UserContext.Provider value={{ 
+            userData, 
+            dataToList, 
+            setDataToList, 
+            fetchUserData, 
+            fetchInOrder, 
+            fetchCodes, 
+            codesToList, 
+             }}>
             {children}
         </UserContext.Provider>
     );
