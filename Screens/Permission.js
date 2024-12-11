@@ -5,12 +5,14 @@ import { useUserData } from "../context/userDataProvider";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ScannerOverlay from './ScannerOverlay';
 
-export default function CameraComponent({ navigation }) {
+export default function CameraScreen({ navigation, route }) {
 
   const { userData, fetchInOrder } = useUserData();
   const [scanned, setScanned] = useState(false);
   const cameraRef = useRef(null);
   const qrLock = useRef(false);
+  const { qr_codes } = route.params;
+  console.log('qr_codes: ', qr_codes)
 
   const ipComputadora = "192.168.1.67";
 
@@ -40,7 +42,8 @@ export default function CameraComponent({ navigation }) {
           orig_id: parseInt(qrData.orig_id),
           dest_id: userData.id,
           amount: parseFloat(qrData.amount),
-          concept: qrData.concept
+          concept: qrData.concept,
+          qr_code: 'hola',
         }),
       });
 

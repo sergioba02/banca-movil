@@ -70,7 +70,7 @@ export const UserProvider = ({ children }) => {
                         ids.push(transaction.user_dest_id);
                     }
                 })
-                console.log(ids)
+                console.log(ids, jsonData.data)
                 return { ids: ids, transactions: jsonData.data };
             }
         } catch (error) {
@@ -136,17 +136,20 @@ export const UserProvider = ({ children }) => {
                 console.log('codesToList provider: ',jsonData.data);
 
                 jsonData.data.forEach(item => {
-                    tempCodeList.push({
-                        id: item.id,
-                        code: item.code,
-                        amount: JSON.parse(item.data).amount,
-                        concept: JSON.parse(item.data).concept,
-                        date: item.date.slice(0,10),
-                        
-                    })
+                    if(item.status === 'active'){
+                        tempCodeList.push({
+                            id: item.id,
+                            code: item.code,
+                            amount: JSON.parse(item.data).amount,
+                            concept: JSON.parse(item.data).concept,
+                            date: item.date.slice(0,10),
+                            status: item.status
+                            
+                        })
+                    }
                 })
                 setCodesToList(tempCodeList);
-                return;
+                return {qr_codes: jsonData.data};
 
             }
         } catch (error) {
@@ -207,7 +210,8 @@ export const UserProvider = ({ children }) => {
             fetchUserData, 
             fetchInOrder, 
             fetchCodes, 
-            codesToList, 
+            codesToList,
+            fetchUserTransactions, 
              }}>
             {children}
         </UserContext.Provider>

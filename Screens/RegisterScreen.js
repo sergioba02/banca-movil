@@ -1,7 +1,7 @@
 import { useState, } from "react"
 import { StyleSheet, Text, TouchableOpacity, View, Image, TouchableWithoutFeedback, TextInput, Platform, Keyboard, KeyboardAvoidingView, Alert, } from "react-native"
 
-export default function LoginScreen({ navigation }) {
+export default function RegisterScreen({ navigation }) {
 
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");

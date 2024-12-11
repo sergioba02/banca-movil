@@ -17,7 +17,7 @@ import { useCameraPermissions } from "expo-camera";
 
 export default function HomeScreen({ navigation }) {
 
-  const { userData, dataToList, fetchInOrder, fetchCodes } = useUserData();
+  const { userData, dataToList, fetchInOrder, fetchCodes,} = useUserData();
 
   const [permission, requestPermission] = useCameraPermissions();
   const isPermissionGranted = Boolean(permission?.granted);
@@ -53,12 +53,13 @@ export default function HomeScreen({ navigation }) {
   };
 
   const handleCameraAccess = async () => {
+    const { qr_codes } = await fetchCodes();
     if (isPermissionGranted) {
-      navigation.navigate("Permission");
+      navigation.navigate("Permission", qr_codes);
     } else {
       const permissionResponse = await requestPermission();
       if (permissionResponse.granted) {
-        navigation.navigate("Permission");
+        navigation.navigate("Permission", qr_codes);
       } else {
         Alert.alert("Permiso denegado", "Se requiere permiso a la cámara para continuar.");
       }
@@ -125,7 +126,8 @@ export default function HomeScreen({ navigation }) {
             keyExtractor={(index) => index.toString()}
             ListEmptyComponent={<Text>No hay datos para mostrar</Text>}
           />
-          <TouchableOpacity
+          {limitedData.length >= 4 && (
+            <TouchableOpacity
             style={styles.historySeeMore}
             onPress={() => {
               refreshData();
@@ -134,6 +136,7 @@ export default function HomeScreen({ navigation }) {
           >
             <Text style={styles.historySeeMoreLabel}>Ver más</Text>
           </TouchableOpacity>
+          )}
         </View>
         {/* View de miniHistorial */}
         <View style={styles.btnsContainer}>
